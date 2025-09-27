@@ -22,3 +22,10 @@ Este borrador fue elaborado usando https://stackedit.io/app#
     ->nombre_proyecto.md (documento principal estructurado por capítulos)
     
 **Estructura del documento principal:**
+
+## 👩‍💻 Integrantes del equipo
+
+- Isasi Vitale Bianca Ailin 
+- Montanaro Gabriela Antonella
+- Pucheta Blanco Nicolas
+- Silva Riquelme Axel
