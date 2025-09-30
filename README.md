@@ -27,5 +27,5 @@ Este borrador fue elaborado usando https://stackedit.io/app#
 
 - Isasi Vitale Bianca Ailin 
 - Montanaro Gabriela Antonella
-- Pucheta Blanco Nicolas
+- Pucheta Blanco Nicolas Alejandro
 - Silva Riquelme Axel
