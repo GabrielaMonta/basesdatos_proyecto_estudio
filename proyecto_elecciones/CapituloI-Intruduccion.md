@@ -40,5 +40,5 @@ Diseñar e implementar un sistema de voto electrónico en el ámbito estudiantil
 - Desarrollar consultas SQL que permitan obtener resultados de manera clara y confiable.  
 - Promover la accesibilidad del voto y reducir las limitaciones del sistema presencial.  
 
----
+
 
