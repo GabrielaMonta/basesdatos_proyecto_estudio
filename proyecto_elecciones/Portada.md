@@ -2,13 +2,14 @@
     
 **Estructura del documento principal:**
 
-# PRESENTACIÓN (Título/Nombre Proyecto)
+# PRESENTACIÓN PROYECTO ELECCIONES
 
 **Asignatura**: Bases de Datos I (FaCENA-UNNE)
 
 **Integrantes**:
- - Sed vel lectus nec lectus placerat laoreet et sed est.
- - Sed ac justo ac mauris porttitor convallis non sit amet felis.
- - In tincidunt augue sed molestie malesuada.
+ - Isasi Vitale, Bianca Ailin.
+ - Montanaro, Gabriela Antonella.
+ - Pucheta Blanco, Nicolas Alejandro.
+ - Silva Riquelme, Axel.
 
-**Año**: 2024
+**Año**: 2025
