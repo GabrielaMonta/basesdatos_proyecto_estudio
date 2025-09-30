@@ -24,4 +24,21 @@ Por lo tanto, se busca modelar e implementar un sistema informatizado que brinde
 
 ### Definición o planteamiento del problema
 
-Pellentesque interdum aliquam magna sit amet rutrum. Nulla aliquam ligula nec quam iaculis dictum. In cursus aliquam cursus. Nullam a sem vel sapien iaculis finibus. Donec aliquam dictum viverra. Etiam ut orci lacus.
+
+## C. Objetivo del Trabajo Práctico
+
+### Objetivo General
+Diseñar e implementar un sistema de voto electrónico en el ámbito estudiantil universitario, soportado en un motor de base de datos, que garantice el correcto registro, procesamiento y consulta de la información relacionada con el proceso electoral.
+
+### Objetivos Específicos
+- Analizar el proceso electoral estudiantil y sus requerimientos.  
+- Modelar conceptualmente la base de datos (diagrama E–R).  
+- Derivar el modelo lógico relacional y aplicar normalización.  
+- Implementar el modelo en un motor de base de datos (SQL).  
+- Definir restricciones de integridad (validación de votantes, unicidad del voto, control de elecciones activas).  
+- Registrar candidatos, listas, mesas y resultados de votación.  
+- Desarrollar consultas SQL que permitan obtener resultados de manera clara y confiable.  
+- Promover la accesibilidad del voto y reducir las limitaciones del sistema presencial.  
+
+---
+

@@ -1,0 +1,15 @@
+# Carpetas y archivos de Visual Studio
+.vs/
+*.vsidx
+*.user
+*.suo
+*.cache
+*.log
+
+# Archivos temporales
+*.tmp
+*.bak
+
+# Archivos de sistema
+Thumbs.db
+.DS_Store
