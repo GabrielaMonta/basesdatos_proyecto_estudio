@@ -1,11 +1,11 @@
 # CAPÍTULO I: INTRODUCCIÓN
 
-### a. Tema
+## Tema
 
 **Título del trabajo práctico:**  
 *Modelado e implementación de un sistema de voto electrónico estudiantil en un motor de bases de datos.*
 
-### b. Definición o planteamiento del problema
+## Definición o planteamiento del problema
 
 A lo largo de los años, distintos países han experimentado con sistemas de voto electrónico en el ámbito estatal, buscando optimizar los procesos democráticos. Sin embargo, trasladar esta problemática al entorno educativo abre nuevas oportunidades de aplicación.
 
@@ -22,10 +22,8 @@ En la actualidad, las elecciones estudiantiles suelen realizarse de forma presen
 
 Por lo tanto, se busca modelar e implementar un sistema informatizado que brinde una alternativa válida para los procesos de elección estudiantil, apoyándose en una base de datos que asegure consistencia, seguridad y trazabilidad de la información.
 
-### Definición o planteamiento del problema
 
-
-## C. Objetivo del Trabajo Práctico
+## Objetivo del Trabajo Práctico
 
 ### Objetivo General
 Diseñar e implementar un sistema de voto electrónico en el ámbito estudiantil universitario, soportado en un motor de base de datos, que garantice el correcto registro, procesamiento y consulta de la información relacionada con el proceso electoral.

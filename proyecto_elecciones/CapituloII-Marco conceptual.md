@@ -1,22 +1,22 @@
 ## CAPITULO II: MARCO CONCEPTUAL O REFERENCIAL
 
 
-### �Qu� es el voto electr�nico?
+### ¿Qué  es el voto electrónico?
 El voto electrónico o e-voting hace referencia al uso de medios electrónicos para la emisión, registro y conteo de los sufragios en elecciones y referendos. Su objetivo principal es modernizar el proceso electoral, ofreciendo mayor rapidez en el escrutinio, 
 reducción de errores humanos y facilidades de accesibilidad para los votantes.
 Existen diversas modalidades de voto electrónico, que varían según el grado de intervención tecnológica y el contexto en el que se aplican. Entre ellas, se destacan:
 
-	o	Voto supervisado con máquinas electrónicas: el votante se presenta en un centro electoral y utiliza una máquina de registro electrónico directo (Direct Recording Electronic – DRE). 
-		La interfaz puede ser una pantalla táctil o un escáner óptico que lee la papeleta marcada por el elector. Los votos se registran y almacenan localmente en el dispositivo, sin necesidad de transmisión por Internet.
+- **Voto supervisado con máquinas electrónicas:** el votante se presenta en un centro electoral y utiliza una máquina de registro electrónico directo (Direct Recording Electronic – DRE). 
+La interfaz puede ser una pantalla táctil o un escáner óptico que lee la papeleta marcada por el elector. Los votos se registran y almacenan localmente en el dispositivo, sin necesidad de transmisión por Internet.
 	
-	o	Voto con tarjetas electrónicas o dispositivos específicos: mediante el uso de agendas electrónicas, tarjetas inteligentes u otros medios físicos que permiten autenticar y registrar el sufragio en la máquina electoral.
+- **Voto con tarjetas electrónicas o dispositivos específicos:** mediante el uso de agendas electrónicas, tarjetas inteligentes u otros medios físicos que permiten autenticar y registrar el sufragio en la máquina electoral.
 	
-	o	Voto remoto en línea: el elector emite su voto desde una computadora personal, teléfono móvil u otro dispositivo conectado a Internet, enviando su sufragio a un servidor remoto encargado de su almacenamiento y posterior conteo.
+- **Voto remoto en línea**: el elector emite su voto desde una computadora personal, teléfono móvil u otro dispositivo conectado a Internet, enviando su sufragio a un servidor remoto encargado de su almacenamiento y posterior conteo.
 
 En el presente proyecto, el análisis y la propuesta estarán centrados en el voto remoto a través de Internet, ya que representa una solución para el ámbito estudiantil. Permite que los alumnos ejerzan su derecho al voto sin la
 obligación de estar presentes en un lugar físico, reduciendo así las barreras de participación y ampliando las oportunidades de inclusión en los procesos democráticos internos.
 
-### �Qu� desaf�os tenemos por delante?
+### ¿Qué desafíos tenemos por delante?
 Al encontrarnos frente al desarrollo de un sistema electoral estudiantil, es necesario considerar los diversos factores que garanticen el funcionamiento adecuado.
 
 Como punto más importante debemos contemplar la seguridad del sistema y sus datos, resguardando la información de los estudiantes y protegiendo el carácter secreto del voto, evitando establecer cualquier tipo de conexión entre ellos.
