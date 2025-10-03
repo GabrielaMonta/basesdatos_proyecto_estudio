@@ -1,4 +1,4 @@
-## CAPITULO II: MARCO CONCEPTUAL O REFERENCIAL
+## CAPITULO II: MARCO CONCEPTUAL
 
 
 ### ¿Qué  es el voto electrónico?
