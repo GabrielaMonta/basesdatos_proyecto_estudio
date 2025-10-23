@@ -1,5 +1,5 @@
 ## CAPITULO II: MARCO CONCEPTUAL
-
+jjjjj
 
 ### ¿Qué  es el voto electrónico?
 El voto electrónico o e-voting hace referencia al uso de medios electrónicos para la emisión, registro y conteo de los sufragios en elecciones y referendos. Su objetivo principal es modernizar el proceso electoral, ofreciendo mayor rapidez en el escrutinio, 
