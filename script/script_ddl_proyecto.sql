@@ -40,7 +40,7 @@ CREATE TABLE universidad
 
 CREATE TABLE facultad
 (
-  facultad_id INT NOT NULL,
+  facultad_id INT IDENTITY(1,1) NOT NULL,
   nombre_facultad VARCHAR(200) NOT NULL,
   direccion VARCHAR(150) NOT NULL,
   universidad_id INT NOT NULL,
@@ -70,11 +70,11 @@ CREATE TABLE carrera_estudiante
 
 CREATE TABLE facultad_carrera
 (
-  facultad_id INT NOT NULL,
   universidad_id INT NOT NULL,
+  facultad_id INT NOT NULL,
   carrera_id INT NOT NULL,
-  CONSTRAINT PK_facultad_carrera PRIMARY KEY (facultad_id, universidad_id, carrera_id),
-  CONSTRAINT FK_facultad_carrera_facultad FOREIGN KEY (facultad_id, universidad_id) REFERENCES facultad(universidad_id, facultad_id),
+  CONSTRAINT PK_facultad_carrera PRIMARY KEY (universidad_id, facultad_id, carrera_id),
+  CONSTRAINT FK_facultad_carrera_facultad FOREIGN KEY (universidad_id, facultad_id) REFERENCES facultad(universidad_id, facultad_id),
   CONSTRAINT FK_facultad_carrera_carrera FOREIGN KEY (carrera_id) REFERENCES carrera(carrera_id)
 );
 
