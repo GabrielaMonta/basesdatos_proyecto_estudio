@@ -1,6 +1,6 @@
 # CAPÍTULO I: INTRODUCCIÓN
 ggg
-## Tema
+## Temahoal
 
 **Título del trabajo práctico:**  
 *Modelado e implementación de un sistema de voto electrónico estudiantil en un motor de bases de datos.*
