@@ -1,224 +1,311 @@
--- SCRIPT "nombre del proyecto"
+-- SCRIPT "Voto Electronico"
 -- INSERCIÓN DEL LOTE DE DATOS
 
 USE proyecto_elecciones;
 GO
 
-        --/ UNIVERSIDAD /--
+
+-- ----------------------------------------------------------------------------
+-- TABLA: universidad
+-- ----------------------------------------------------------------------------
 INSERT INTO universidad (nombre)
-VALUES ('Universidad Nacional del Nordeste');
+VALUES ('Universidad Nacional de Corrientes');
 
+-- Ver resultado
+SELECT * FROM universidad;
+GO
 
-        --/ FACULTAD /--
-INSERT INTO facultad (universidad_id, nombre_facultad, direccion)
-VALUES (1,'Facultad de Ciencias Exactas y Naturales y Agrimensura', '9 de Julio 1449 - Corrientes, Corrientes');
+-- ----------------------------------------------------------------------------
+-- TABLA: facultad
+-- ----------------------------------------------------------------------------
+INSERT INTO facultad (nombre_facultad, direccion, universidad_id)
+VALUES ('Facultad de Ciencias Exactas y Naturales', 'Av. Libertad 5400', 1);
 
+-- Ver resultado
+SELECT * FROM facultad;
+GO
 
-        --/ CARRERA /--
+-- ----------------------------------------------------------------------------
+-- TABLA: carrera
+-- ----------------------------------------------------------------------------
 INSERT INTO carrera (nombre_carrera)
 VALUES ('Licenciatura en Sistemas'),
-       ('Agrimensura');
+       ('Ingeniería en Computación'),
+       ('Profesorado en Matemática');
 
+-- Ver resultado
+SELECT * FROM carrera;
+GO
 
-       --/ FACULTAD_CARRERA /--
+-- ----------------------------------------------------------------------------
+-- TABLA: facultad_carrera
+-- ----------------------------------------------------------------------------
 INSERT INTO facultad_carrera (universidad_id, facultad_id, carrera_id)
-VALUES 
-(1, 2, 1),
-(1, 2, 2);
+VALUES (1, 1, 1),
+       (1, 1, 2),
+       (1, 1, 3);
 
+-- Ver resultado
+SELECT * FROM facultad_carrera;
+GO
 
-        --/ PARTIDO /--
-INSERT INTO partido (nombre_partido)
-VALUES ('Lista Azul'),
-       ('Lista Naranja');
-
-
-        --/ ESTADO CARRERA /--
+-- ----------------------------------------------------------------------------
+-- TABLA: estado_carrera
+-- ----------------------------------------------------------------------------
 INSERT INTO estado_carrera (nombre)
-VALUES ('Regular'),
-       ('Egresado/a'),
-       ('Libre');
+VALUES ('Activo'),
+       ('Egresado'),
+       ('Inactivo');
+
+-- Ver resultado
+SELECT * FROM estado_carrera;
+GO
 
 
-        --/ ESTUDIANTES /--
+
+-- ----------------------------------------------------------------------------
+-- TABLA: Estudiante LOTE 1
+-- ----------------------------------------------------------------------------
+
 INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
-VALUES
-(43116282,'Gabriela Antonella','Montanaro','gabrielaMontanaro@gmail.com'),
-(43068676,'Bianca Ailin','Isasi Vitale','biancaIsasiVitale@gmail.com'),
-(46382175,'Nicolas Alejandro','Pucheta Blanco','NicolasPucheta@gmail.com'),
-(45095896,'Axel','Silva Riquelme','AxelSilva@gmail.com')
+VALUES (40901234, 'Agustina', 'Mendoza', 'agustina.mendoza@estudiante.unne.edu.ar');
 
 INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (41012345, 'Franco', 'Benítez', 'franco.benitez@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (41123456, 'Jazmín', 'Romero', 'jazmin.romero@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (41234567, 'Tomás', 'Herrera', 'tomas.herrera@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (41345678, 'Carolina', 'Acosta', 'carolina.acosta@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (41456789, 'Federico', 'Gómez', 'federico.gomez@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (41567890, 'Milagros', 'Luna', 'milagros.luna@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (41678901, 'Ezequiel', 'Suárez', 'ezequiel.suarez@estudiante.unne.edu.ar');
+-- Verificar resultados
+SELECT * FROM estudiante;
+GO
+
+
+-- Candidatos
+-- LOTE 2 DE CANDIDATOS
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (35789012, 'Federico', 'Ramos', 'federico.ramos@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (35890123, 'Agustina', 'Pereyra', 'agustina.pereyra@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (35901234, 'Luciano', 'Navarro', 'luciano.navarro@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (36012345, 'Camila', 'Sosa', 'camila.sosa@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (36123456, 'Tomás', 'Romero', 'tomas.romero@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (36234567, 'Valeria', 'Herrera', 'valeria.herrera@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (36345678, 'Nicolás', 'Medina', 'nicolas.medina@estudiante.unne.edu.ar');
+
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (36456789, 'Julieta', 'Figueroa', 'julieta.figueroa@estudiante.unne.edu.ar');
+
+
+
+
+-- ----------------------------------------------------------------------------
+-- TABLA: carrera_estudiante
+-- ----------------------------------------------------------------------------
+INSERT INTO carrera_estudiante (carrera_id, documento_estudiante, año_ingreso, año_egreso, estado_id)
 VALUES 
-(12345678, 'María', 'Gómez', 'maria.gomez@gmail.com'),
-(87654321, 'Pedro', 'Leyes', 'pedro.leyes@gmail.com'),
-(33445566, 'Ana', 'Martínez', 'ana.martinez@gmail.com');
+    (1, 40123456, '2021-03-01', NULL, 1),
+    (1, 40234567, '2021-03-01', NULL, 1),
+    (2, 40345678, '2022-03-01', NULL, 1),
+    (2, 40456789, '2022-03-01', NULL, 1),
+    (1, 40567890, '2020-03-01', NULL, 1),
+    (3, 40678901, '2021-03-01', NULL, 1),
+    (1, 40789012, '2023-03-01', NULL, 1),
+    (2, 40890123, '2023-03-01', NULL, 1),
+    (1, 35123456, '2019-03-01', NULL, 1),
+    (1, 35234567, '2019-03-01', NULL, 1),
+    (2, 35345678, '2019-03-01', NULL, 1),
+    (2, 35456789, '2020-03-01', NULL, 1),
+    (1, 35567890, '2020-03-01', NULL, 1),
+    (1, 35678901, '2020-03-01', NULL, 1);
 
+-- Ver resultado
+SELECT * FROM carrera_estudiante;
+GO
 
-        --/ CARRERA ESTUDIANTE /--
-INSERT INTO carrera_estudiante (carrera_id, documento_estudiante, año_ingreso, estado_id)
-VALUES 
-(1,43116282,'2022-02-15',1),
-(1,43068676,'2022-02-15',1),
-(1,46382175,'2022-02-15',1),
-(1,45095896,'2022-02-15',1),
-(1, 12345678, '2021-03-10', 1),
-(1, 87654321, '2020-03-10', 1),
-(2, 33445566, '2019-03-10', 1);
+-- ----------------------------------------------------------------------------
+-- TABLA: partido
+-- ----------------------------------------------------------------------------
+INSERT INTO partido (nombre_partido)
+VALUES ('Frente Estudiantil Azul'),
+       ('Movimiento Verde Universitario'),
+       ('Agrupación Roja por los Derechos');
 
+-- Ver resultado
+SELECT * FROM partido;
+GO
 
-       --/ CARGO ELECCION /--
-INSERT INTO cargo_eleccion (nombre, descripcion)
-VALUES 
-('Presidente del Centro de Estudiantes', 'Máximo cargo de representación estudiantil'),
-('Vicepresidente', 'Segundo cargo de mayor jerarquía'),
-('Secretario General', 'Responsable de la gestión administrativa del centro');
-
-
-       --/ BANCA /--
-INSERT INTO banca (nombre)
-VALUES 
-('Titular'),
-('Suplente');
-
-
-       --/ ORDEN /--
-INSERT INTO orden (numero)
-VALUES 
-(1),
-(2),
-(3);
-
-
-       --/ CARGO BANCA /--
-INSERT INTO cargo_banca (cargo_id, banca_id, orden_id)
-VALUES
-(1, 1, 1),  -- Presidente Titular
-(1, 2, 2),  -- Presidente Suplente
-(2, 1, 1),  -- Vicepresidente Titular
-(2, 2, 2),  -- Vicepresidente Suplente
-(3, 1, 1);  -- Secretario General Titular
-
-select * from cargo_banca
-
-
-       --/ CARGO BANCA BANCA /--
-INSERT INTO cargo_banca_estudiante (cargo_id, banca_id, orden_id, documento_estudiante)
-VALUES
-(1, 1, 1, 43116282), -- Gabriela Presidente Titular
-(1, 2, 2, 43068676), -- Bianca Presidente Suplente
-(2, 1, 1, 46382175), -- Nicolás Vicepresidente Titular
-(2, 2, 2, 45095896), -- Axel Vicepresidente Suplente
-(3, 1, 1, 12345678); -- María Secretaria General Titular
-
-
-       --/ LISTA /--
+-- ----------------------------------------------------------------------------
+-- TABLA: lista
+-- ----------------------------------------------------------------------------
 INSERT INTO lista (partido_id)
-VALUES
-(1), -- Lista Azul
-(2); -- Lista Naranja
+VALUES (1), -- Lista 1: Frente Azul
+       (2), -- Lista 2: Movimiento Verde
+       (3); -- Lista 3: Agrupación Roja
 
+-- Ver resultado
+SELECT * FROM lista;
+GO
 
-       --/ LISTA CARGOS/--
+-- ----------------------------------------------------------------------------
+-- TABLA: cargo_eleccion
+-- ----------------------------------------------------------------------------
+INSERT INTO cargo_eleccion (nombre, descripcion)
+VALUES ('Presidente', 'Representante principal del centro de estudiantes'),
+       ('Vicepresidente', 'Segundo al mando del centro de estudiantes'),
+       ('Secretario General', 'Encargado de actas y documentación'),
+       ('Tesorero', 'Administrador de recursos económicos');
+
+-- Ver resultado
+SELECT * FROM cargo_eleccion;
+GO
+
+-- ----------------------------------------------------------------------------
+-- TABLA: banca
+-- ----------------------------------------------------------------------------
+INSERT INTO banca (nombre)
+VALUES ('Banca Titular 1'),
+       ('Banca Titular 2'),
+       ('Banca Suplente 1');
+
+-- Ver resultado
+SELECT * FROM banca;
+GO
+
+-- ----------------------------------------------------------------------------
+-- TABLA: orden
+-- ----------------------------------------------------------------------------
+INSERT INTO orden (numero)
+VALUES (1), (2), (3), (4);
+
+-- Ver resultado
+SELECT * FROM orden;
+GO
+
+-- ----------------------------------------------------------------------------
+-- TABLA: cargo_banca
+-- ----------------------------------------------------------------------------
+INSERT INTO cargo_banca (cargo_id, banca_id, orden_id)
+VALUES (1, 1, 1), -- Presidente, Banca Titular 1, Orden 1
+       (2, 1, 2), -- Vicepresidente, Banca Titular 1, Orden 2
+       (3, 2, 1), -- Secretario, Banca Titular 2, Orden 1
+       (4, 2, 2); -- Tesorero, Banca Titular 2, Orden 2
+
+-- Ver resultado
+SELECT * FROM cargo_banca;
+GO
+
+-- ----------------------------------------------------------------------------
+-- TABLA: cargo_banca_estudiante
+-- ----------------------------------------------------------------------------
+INSERT INTO cargo_banca_estudiante (cargo_id, banca_id, orden_id, documento_estudiante)
+VALUES (1, 1, 1, 35123456), -- Juan Pérez - Presidente
+       (2, 1, 2, 35234567), -- María González - Vicepresidente
+       (1, 1, 1, 35345678), -- Carlos López - Presidente
+       (2, 1, 2, 35456789), -- Ana Martínez - Vicepresidente
+       (1, 1, 1, 35567890), -- Pedro Fernández - Presidente
+       (2, 1, 2, 35678901); -- Laura Rodríguez - Vicepresidente
+
+-- Ver resultado
+SELECT * FROM cargo_banca_estudiante;
+GO
+
+-- ----------------------------------------------------------------------------
+-- TABLA: lista_cargos
+-- ----------------------------------------------------------------------------
 INSERT INTO lista_cargos (lista_id, cargo_id, banca_id, orden_id, documento_estudiante)
-VALUES
-(1, 1, 1, 1, 43116282),
-(1, 2, 1, 1, 46382175),
-(1, 3, 1, 1, 12345678),
-(2, 1, 2, 2, 43068676),
-(2, 2, 2, 2, 45095896);
+VALUES 
+    -- Lista 1 (Frente Azul)
+    (1, 1, 1, 1, 35123456), -- Juan Pérez - Presidente
+    (1, 2, 1, 2, 35234567), -- María González - Vice
+    -- Lista 2 (Movimiento Verde)
+    (2, 1, 1, 1, 35345678), -- Carlos López - Presidente
+    (2, 2, 1, 2, 35456789), -- Ana Martínez - Vice
+    -- Lista 3 (Agrupación Roja)
+    (3, 1, 1, 1, 35567890), -- Pedro Fernández - Presidente
+    (3, 2, 1, 2, 35678901); -- Laura Rodríguez - Vice
 
+-- Ver resultado
+SELECT * FROM lista_cargos;
+GO
 
-       --/ ELECCION /--
+-- ----------------------------------------------------------------------------
+-- TABLA: eleccion
+-- ----------------------------------------------------------------------------
 INSERT INTO eleccion (año)
-VALUES (2025);
+VALUES (2024);
 
+-- Ver resultado
+SELECT * FROM eleccion;
+GO
 
-       --/ MESA IDENTIFICACION /--
-INSERT INTO mesa_identificacion (nro_mesa_identificacion, eleccion_id)
-VALUES 
-(1, 1),
-(2, 1);
+-- ----------------------------------------------------------------------------
+-- TABLA: mesa_identificacion
+-- ----------------------------------------------------------------------------
+INSERT INTO mesa_identificacion (nro_mesa_identificacion, documento_estudiante, eleccion_id)
+VALUES (1, 40123456, 1),
+       (1, 40234567, 1),
+       (2, 40345678, 1),
+       (2, 40456789, 1),
+       (3, 40567890, 1),
+       (3, 40678901, 1),
+       (4, 40789012, 1),
+       (4, 40890123, 1);
 
+-- Ver resultado
+SELECT * FROM mesa_identificacion;
+GO
 
-       --/ MESA IDENTIFICACION ESTUDIANTE /--
-INSERT INTO mesa_identificacion_estudiante (mesa_identificacion_id, documento_estudiante)
-VALUES
-(1, 43116282),
-(1, 43068676),
-(1, 46382175),
-(2, 45095896),
-(2, 12345678),
-(2, 87654321),
-(2, 33445566);
-
-
-       --/ TOKEN VOTANTE /--
-INSERT INTO token_votante (codigo_token, mesa_identificacion_id, usado)
-VALUES
-(HASHBYTES('SHA2_256', 'token1'), 1, 0),
-(HASHBYTES('SHA2_256', 'token2'), 1, 0),
-(HASHBYTES('SHA2_256', 'token3'), 1, 0),
-(HASHBYTES('SHA2_256', 'token4'), 2, 0),
-(HASHBYTES('SHA2_256', 'token5'), 2, 0),
-(HASHBYTES('SHA2_256', 'token6'), 2, 0),
-(HASHBYTES('SHA2_256', 'token7'), 2, 0);
-
-select * from token_votante
-
-
-       --/ MESA VOTACION /--
+-- ----------------------------------------------------------------------------
+-- TABLA: mesa_votacion
+-- ----------------------------------------------------------------------------
 INSERT INTO mesa_votacion (nro_mesa_votacion)
+VALUES (1), (2), (3), (4);
+
+-- Ver resultado
+SELECT * FROM mesa_votacion;
+GO
+
+-- ----------------------------------------------------------------------------
+-- TABLA: token_votante
+-- ----------------------------------------------------------------------------
+INSERT INTO token_votante (codigo_token, usado, mesa_identificacion_id)
 VALUES 
-(1),
-(2);
+    (HASHBYTES('SHA2_256', '40123456-2024-1'), 0, 1),
+    (HASHBYTES('SHA2_256', '40234567-2024-1'), 0, 2),
+    (HASHBYTES('SHA2_256', '40345678-2024-1'), 0, 3),
+    (HASHBYTES('SHA2_256', '40456789-2024-1'), 0, 4),
+    (HASHBYTES('SHA2_256', '40567890-2024-1'), 0, 5),
+    (HASHBYTES('SHA2_256', '40678901-2024-1'), 0, 6),
+    (HASHBYTES('SHA2_256', '40789012-2024-1'), 0, 7),
+    (HASHBYTES('SHA2_256', '40890123-2024-1'), 0, 8);
 
-
-       --/ MESA VOTACION TOKEN /--
-INSERT INTO mesa_votacion_token (mesa_votacion_id, token_id)
-VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(2, 4),
-(2, 5),
-(2, 6),
-(2, 7);
-
-
-       --/ VOTO /--
-INSERT INTO voto (token_id, lista_id)
-VALUES
-(1, 1),
-(2, 1),
-(3, 2),
-(4, 2),
-(5, 1),
-(6, 2),
-(7, 1);
-
-
-       --/ ESCRUTINIO MESA /--
-INSERT INTO escrutinio_mesa (lista_id, mesa_votacion_id, cantidad_votos)
-VALUES
-(1, 1, 2),
-(2, 1, 1),
-(1, 2, 2),
-(2, 2, 2);
-
-
-       --/ RESULTADO ELECCION /--
-INSERT INTO resultado_eleccion (lista_id, eleccion_id, resultado)
-VALUES
-(1, 1, 4),
-(2, 1, 3);
-select * from resultado_eleccion
-
-
-       --/ CONSULTA PRUEBA /--
-SELECT l.lista_id, p.nombre_partido, COUNT(v.token_id) AS votos
-FROM voto v
-JOIN lista l ON v.lista_id = l.lista_id
-JOIN partido p ON l.partido_id = p.partido_id
-GROUP BY l.lista_id, p.nombre_partido;
+-- Ver resultado
+SELECT * FROM token_votante;
+GO
 
