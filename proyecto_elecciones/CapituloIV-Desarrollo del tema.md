@@ -4,7 +4,7 @@ y documentación técnica. En este capítulo se presentan los resultados estruct
 
 ### Diagrama relacional
 El diagrama relacional final refleja la estructura lógica implementada en SQL Server, incluyendo claves primarias, claves foráneas y relaciones cardinales.
-![diagrama_relacional](main/recursos/Diagrama_relacional_actualizado.png)
+![diagrama_relacional](./recursos/Diagrama_relacional_actualizado.png)
 
 ### Diccionario de datos
 El diccionario describe cada tabla, campo, tipo de dato, clave y restricción utilizada en el sistema.
