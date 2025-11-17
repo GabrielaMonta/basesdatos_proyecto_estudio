@@ -1,91 +1,114 @@
-﻿CREATE DATABASE proyecto_elecciones;
-GO
-
-USE proyecto_elecciones
-GO
-
--- ============================================================================
+﻿-- ============================================================================
 -- PROYECTO: Sistema de Voto Electrónico Estudiantil
 -- BASE DE DATOS: proyecto_elecciones
--- TEMA: Indices columnares en SQL Server (Nicolas)
+-- TEMA: Índices Columnares en SQL Server (Nicolás)
 -- ============================================================================
-
-
+USE proyecto_elecciones
+GO
 -- ============================================================================
--- PARTE 1: APLICACIÓN EN EL SISTEMA DE VOTACIÓN
--- ============================================================================
-
-PRINT '-----------------------------------------------------------'
-PRINT '1. TABLAS CANDIDATAS PARA ÍNDICES COLUMNARES'
-PRINT '-----------------------------------------------------------'
-PRINT ''
-PRINT 'En nuestro sistema de voto electrónico, las tablas ideales son:'
-PRINT ''
-PRINT ' resultado_eleccion:'
-PRINT '  - Contiene totales finales por elección'
-PRINT '  - Se escribe UNA VEZ al finalizar el escrutinio'
-PRINT '  - Se consulta MUCHAS VECES para reportes'
-PRINT '  - Columnas: eleccion_id, lista_id, resultado'
-PRINT ''
-PRINT ' escrutinio_mesa:'
-PRINT '  - Detalle de votos por mesa y lista'
-PRINT '  - Se escribe al finalizar cada mesa'
-PRINT '  - Ideal para análisis agregados (SUM, COUNT, AVG)'
-PRINT '  - Columnas: mesa_votacion_id, lista_id, cantidad_votos'
-PRINT ''
-PRINT 'NO se recomienda en:'
-PRINT '  - Tabla voto (escritura continua durante votación activa)'
-PRINT '  - Tablas con actualizaciones frecuentes'
-PRINT ''
-
--- ============================================================================
--- PARTE 2: ANÁLISIS DEL ESTADO ACTUAL (SIN ÍNDICE COLUMNAR)
+-- PARTE 1: CONTEXTO Y JUSTIFICACIÓN
 -- ============================================================================
 
 PRINT '-----------------------------------------------------------'
-PRINT '2. MEDICIÓN DE RENDIMIENTO SIN ÍNDICE COLUMNAR'
+PRINT '1. ¿QUÉ SON LOS ÍNDICES COLUMNARES?'
+PRINT '-----------------------------------------------------------'
+PRINT ''
+PRINT 'Los índices columnares almacenan datos organizados por columnas'
+PRINT 'en lugar de filas, optimizando consultas analíticas y reduciendo'
+PRINT 'el uso de memoria mediante compresión eficiente.'
+PRINT ''
+PRINT '-----------------------------------------------------------'
+PRINT '2. APLICACIÓN EN SISTEMA DE VOTACIÓN'
+PRINT '-----------------------------------------------------------'
+PRINT ''
+PRINT ' TABLAS IDEALES PARA ÍNDICES COLUMNARES:'
+PRINT ''
+PRINT '  • resultado_eleccion:'
+PRINT '    - Totales finales por lista'
+PRINT '    - Se escribe UNA VEZ al finalizar escrutinio'
+PRINT '    - Se consulta MUCHAS VECES para reportes'
+PRINT '    - Columnas: eleccion_id, lista_id, resultado'
+PRINT ''
+PRINT '  • escrutinio_mesa:'
+PRINT '    - Detalle de votos por mesa y lista'
+PRINT '    - Se escribe al cerrar cada mesa'
+PRINT '    - Ideal para agregaciones (SUM, COUNT, AVG)'
+PRINT '    - Columnas: mesa_votacion_id, lista_id, cantidad_votos'
+PRINT ''
+PRINT ' NO RECOMENDADO EN:'
+PRINT ''
+PRINT '  • Tabla voto (escritura continua durante votación)'
+PRINT '  • Tablas con actualizaciones frecuentes'
+PRINT '  • Tablas pequeñas de configuración'
+PRINT ''
+
+-- ============================================================================
+-- PARTE 2: VERIFICACIÓN DE DATOS
+-- ============================================================================
+
+PRINT '-----------------------------------------------------------'
+PRINT '3. VERIFICACIÓN DE DATOS ACTUALES'
 PRINT '-----------------------------------------------------------'
 PRINT ''
 
--- Contar registros actuales en las tablas principales
+-- Contar registros en tablas principales
+DECLARE @total_estudiantes INT = (SELECT COUNT(*) FROM estudiante);
 DECLARE @total_votos INT = (SELECT COUNT(*) FROM voto);
 DECLARE @total_escrutinio INT = (SELECT COUNT(*) FROM escrutinio_mesa);
 DECLARE @total_resultado INT = (SELECT COUNT(*) FROM resultado_eleccion);
 
-PRINT 'Estado actual de la base de datos:'
-PRINT '  - Votos registrados: ' + CAST(@total_votos AS VARCHAR)
-PRINT '  - Registros en escrutinio_mesa: ' + CAST(@total_escrutinio AS VARCHAR)
-PRINT '  - Registros en resultado_eleccion: ' + CAST(@total_resultado AS VARCHAR)
+PRINT 'Estado de la base de datos:'
+PRINT '  Estudiantes registrados: ' + CAST(@total_estudiantes AS VARCHAR)
+PRINT '  Votos emitidos: ' + CAST(@total_votos AS VARCHAR)
+PRINT '  Registros en escrutinio_mesa: ' + CAST(@total_escrutinio AS VARCHAR)
+PRINT '  Registros en resultado_eleccion: ' + CAST(@total_resultado AS VARCHAR)
 PRINT ''
 
-IF @total_escrutinio = 0
+-- Validar que hay datos para las pruebas
+IF @total_escrutinio = 0 OR @total_resultado = 0
 BEGIN
-    PRINT 'No hay datos en escrutinio_mesa'
+    PRINT ' ADVERTENCIA: No hay datos suficientes para las pruebas'
+    PRINT 'Ejecute primero el script de inserción de datos.'
+    PRINT ''
+END
+ELSE
+BEGIN
+    PRINT '✓ Datos disponibles para pruebas de rendimiento'
     PRINT ''
 END
 
--- Vaciar caché de datos y planes de ejecución para prueba limpia
-DBCC DROPCLEANBUFFERS; -- Limpia el buffer pool de datos
-DBCC FREEPROCCACHE;    -- Limpia planes de ejecución en caché
+-- ============================================================================
+-- PARTE 3: MEDICIÓN SIN ÍNDICE COLUMNAR (BASELINE)
+-- ============================================================================
+
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT '4. MEDICIÓN DE RENDIMIENTO - SIN ÍNDICE COLUMNAR'
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT ''
+
+-- Vaciar caché para medición limpia
+DBCC DROPCLEANBUFFERS;  -- Limpia buffer pool de datos en memoria
+DBCC FREEPROCCACHE;     -- Limpia planes de ejecución cacheados
 GO
 
--- Activar medición de tiempos de CPU y lecturas de disco
-SET STATISTICS TIME ON;
-SET STATISTICS IO ON;
+-- Activar estadísticas detalladas
+SET STATISTICS TIME ON;  -- Muestra tiempo de CPU y elapsed
+SET STATISTICS IO ON;    -- Muestra lecturas lógicas y físicas
 
 PRINT ''
-PRINT '════════════════════════════════════════════════════════════════════'
-PRINT 'CONSULTA 1: Ranking de listas por total de votos sin indice columnar'
-PRINT '════════════════════════════════════════════════════════════════════'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'CONSULTA 1: Ranking de listas por total de votos'
+PRINT 'SIN índice columnar'
+PRINT '─────────────────────────────────────────────────────────────'
 
--- Marca de inicio para calcular tiempo transcurrido
+-- Capturar tiempo inicial
 DECLARE @inicio1 DATETIME2 = SYSDATETIME();
 
 SELECT 
     p.nombre_partido,
     l.lista_id,
     SUM(em.cantidad_votos) AS total_votos,
-    -- Calcular porcentaje sobre el total general
+    -- Calcular porcentaje sobre total general
     CAST(SUM(em.cantidad_votos) * 100.0 / 
          (SELECT SUM(cantidad_votos) FROM escrutinio_mesa) 
          AS DECIMAL(5,2)) AS porcentaje
@@ -100,16 +123,17 @@ DECLARE @fin1 DATETIME2 = SYSDATETIME();
 DECLARE @tiempo1_sin INT = DATEDIFF(MICROSECOND, @inicio1, @fin1);
 
 PRINT ''
-PRINT 'Tiempo sin índice columnar: ' + CAST(@tiempo1_sin/1000.0 AS VARCHAR(20)) + ' ms'
+PRINT ' Tiempo sin índice columnar: ' + CAST(@tiempo1_sin/1000.0 AS VARCHAR(20)) + ' ms'
 PRINT ''
 
--------------------------------------------------
+-- ---------------------------------------------------------------
 
-PRINT '═══════════════════════════════════════════════════════════'
-PRINT 'CONSULTA 2: Análisis de votos por mesa, Sin indice columnar'
-PRINT '═══════════════════════════════════════════════════════════'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'CONSULTA 2: Análisis de participación por mesa'
+PRINT 'SIN índice columnar'
+PRINT '─────────────────────────────────────────────────────────────'
 
--- Limpiar caché nuevamente para cada consulta
+-- Limpiar caché para cada consulta
 DBCC DROPCLEANBUFFERS;
 DECLARE @inicio2 DATETIME2 = SYSDATETIME();
 
@@ -117,8 +141,8 @@ SELECT
     em.mesa_votacion_id,
     COUNT(DISTINCT em.lista_id) AS listas_participantes,
     SUM(em.cantidad_votos) AS total_votos_mesa,
-    AVG(em.cantidad_votos) AS promedio_por_lista,  -- Promedio de votos por lista
-    MAX(em.cantidad_votos) AS votos_lista_ganadora -- Lista más votada
+    AVG(em.cantidad_votos) AS promedio_por_lista,   -- Promedio de votos
+    MAX(em.cantidad_votos) AS votos_lista_ganadora  -- Lista más votada
 FROM escrutinio_mesa em
 GROUP BY em.mesa_votacion_id
 ORDER BY total_votos_mesa DESC;
@@ -127,14 +151,15 @@ DECLARE @fin2 DATETIME2 = SYSDATETIME();
 DECLARE @tiempo2_sin INT = DATEDIFF(MICROSECOND, @inicio2, @fin2);
 
 PRINT ''
-PRINT 'Tiempo sin índice columnar: ' + CAST(@tiempo2_sin/1000.0 AS VARCHAR(20)) + ' ms'
+PRINT ' Tiempo sin índice columnar: ' + CAST(@tiempo2_sin/1000.0 AS VARCHAR(20)) + ' ms'
 PRINT ''
 
--------------------------------------------------
+-- ---------------------------------------------------------------
 
-PRINT '═══════════════════════════════════════════════════════════════════════'
-PRINT 'CONSULTA 3: Resultados finales con datos completos, Sin indice Columnar'
-PRINT '═══════════════════════════════════════════════════════════════════════'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'CONSULTA 3: Resultados finales con ranking'
+PRINT 'SIN índice columnar'
+PRINT '─────────────────────────────────────────────────────────────'
 
 DBCC DROPCLEANBUFFERS;
 DECLARE @inicio3 DATETIME2 = SYSDATETIME();
@@ -144,10 +169,10 @@ SELECT
     e.año,
     p.nombre_partido,
     re.resultado AS votos_totales,
-    -- Porcentaje calculado con función de ventana OVER
+    -- Porcentaje con función de ventana OVER
     CAST(re.resultado * 100.0 / SUM(re.resultado) OVER (PARTITION BY re.eleccion_id) 
          AS DECIMAL(5,2)) AS porcentaje,
-    -- Ranking dentro de cada elección
+    -- Ranking por elección
     RANK() OVER (PARTITION BY re.eleccion_id ORDER BY re.resultado DESC) AS ranking
 FROM resultado_eleccion re
 INNER JOIN eleccion e ON re.eleccion_id = e.eleccion_id
@@ -166,95 +191,103 @@ PRINT ''
 SET STATISTICS TIME OFF;
 SET STATISTICS IO OFF;
 
--- Sumar todos los tiempos para obtener total
+-- Calcular total acumulado
 DECLARE @tiempo_total_sin INT = @tiempo1_sin + @tiempo2_sin + @tiempo3_sin;
 
-PRINT '-----------------------------------------------------------'
+PRINT '═══════════════════════════════════════════════════════════'
 PRINT 'RESUMEN - SIN ÍNDICE COLUMNAR:'
-PRINT '  Consulta 1: ' + CAST(@tiempo1_sin/1000.0 AS VARCHAR(20)) + ' ms'
-PRINT '  Consulta 2: ' + CAST(@tiempo2_sin/1000.0 AS VARCHAR(20)) + ' ms'
-PRINT '  Consulta 3: ' + CAST(@tiempo3_sin/1000.0 AS VARCHAR(20)) + ' ms'
-PRINT '  TOTAL:      ' + CAST(@tiempo_total_sin/1000.0 AS VARCHAR(20)) + ' ms'
-PRINT '-----------------------------------------------------------'
+PRINT '  Consulta 1 (Ranking):       ' + RIGHT('        ' + CAST(@tiempo1_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  Consulta 2 (Por mesa):      ' + RIGHT('        ' + CAST(@tiempo2_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  Consulta 3 (Resultados):    ' + RIGHT('        ' + CAST(@tiempo3_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  ──────────────────────────────────────'
+PRINT '  TOTAL:                      ' + RIGHT('        ' + CAST(@tiempo_total_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '═══════════════════════════════════════════════════════════'
 PRINT ''
 
 -- ============================================================================
--- PARTE 3: CREAR ÍNDICES COLUMNARES
+-- PARTE 4: CREACIÓN DE ÍNDICES COLUMNARES
 -- ============================================================================
 
-PRINT '-----------------------------------------------------------'
-PRINT '4. CREACIÓN DE ÍNDICES COLUMNARES'
-PRINT '-----------------------------------------------------------'
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT '5. CREACIÓN DE ÍNDICES COLUMNARES'
+PRINT '═══════════════════════════════════════════════════════════'
 PRINT ''
 
--- Verificar si ya existe el índice y eliminarlo
+-- Eliminar índice anterior si existe
 IF EXISTS (SELECT 1 FROM sys.indexes 
            WHERE name = 'idx_cs_escrutinio_mesa' 
            AND object_id = OBJECT_ID('escrutinio_mesa'))
 BEGIN
     DROP INDEX idx_cs_escrutinio_mesa ON escrutinio_mesa;
-    PRINT 'Indice anterior eliminado en escrutinio_mesa'
+    PRINT '   Índice anterior eliminado en escrutinio_mesa'
 END
 
--- Crear índice NONCLUSTERED COLUMNSTORE (almacena datos por columna)
+PRINT '  Creando índice columnar en escrutinio_mesa...'
+
+-- Crear índice NONCLUSTERED COLUMNSTORE
 CREATE NONCLUSTERED COLUMNSTORE INDEX idx_cs_escrutinio_mesa
 ON escrutinio_mesa (
-    mesa_votacion_id,
-    lista_id,
-    cantidad_votos  -- Columnas más consultadas en agregaciones
+    mesa_votacion_id,   -- ID de mesa (filtros frecuentes)
+    lista_id,           -- ID de lista (agrupaciones)
+    cantidad_votos      -- Cantidad para agregaciones (SUM, AVG)
 );
 
-PRINT 'Indice columnar creado en escrutinio_mesa'
+PRINT '  ✓ Índice columnar creado en escrutinio_mesa'
 PRINT ''
 
--- Mismo proceso para tabla resultado_eleccion
+-- Mismo proceso para resultado_eleccion
 IF EXISTS (SELECT 1 FROM sys.indexes 
            WHERE name = 'idx_cs_resultado_eleccion' 
            AND object_id = OBJECT_ID('resultado_eleccion'))
 BEGIN
     DROP INDEX idx_cs_resultado_eleccion ON resultado_eleccion;
-    PRINT 'Indice anterior eliminado en resultado_eleccion'
+    PRINT '  ↻ Índice anterior eliminado en resultado_eleccion'
 END
+
+PRINT '  Creando índice columnar en resultado_eleccion...'
 
 CREATE NONCLUSTERED COLUMNSTORE INDEX idx_cs_resultado_eleccion
 ON resultado_eleccion (
-    eleccion_id,
-    lista_id,
-    resultado       -- Columna con totales de votos
+    eleccion_id,    -- ID de elección (filtros y agrupaciones)
+    lista_id,       -- ID de lista
+    resultado       -- Total de votos (agregaciones)
 );
 
-PRINT 'Indice columnar creado en resultado_eleccion'
+PRINT '  ✓ Índice columnar creado en resultado_eleccion'
 PRINT ''
 
--- Consultar metadata del sistema para ver info de índices creados
-PRINT 'Información de índices creados:'
+-- Consultar metadata para verificar índices creados
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'Información de índices columnares creados:'
+PRINT '─────────────────────────────────────────────────────────────'
+
 SELECT 
     t.name AS tabla,
     i.name AS nombre_indice,
     i.type_desc AS tipo,
     p.rows AS filas,
-    -- Calcular tamaño en MB (páginas * 8KB / 1024)
+    -- Tamaño en MB: (páginas usadas * 8KB) / 1024
     CAST(SUM(a.used_pages) * 8 / 1024.0 AS DECIMAL(10,2)) AS tamaño_mb
 FROM sys.tables t
     INNER JOIN sys.indexes i ON t.object_id = i.object_id
     INNER JOIN sys.partitions p ON i.object_id = p.object_id AND i.index_id = p.index_id
     INNER JOIN sys.allocation_units a ON p.partition_id = a.container_id
 WHERE t.name IN ('escrutinio_mesa', 'resultado_eleccion')
-  AND i.type_desc LIKE '%COLUMNSTORE%'  -- Filtrar solo índices columnares
+  AND i.type_desc LIKE '%COLUMNSTORE%'  -- Solo índices columnares
 GROUP BY t.name, i.name, i.type_desc, p.rows;
 
 PRINT ''
 
 -- ============================================================================
--- PARTE 4: MEDICIÓN CON ÍNDICE COLUMNAR
+-- PARTE 5: MEDICIÓN CON ÍNDICE COLUMNAR
 -- ============================================================================
 
-PRINT '-----------------------------------------------------------'
-PRINT '5. MEDICIÓN DE RENDIMIENTO CON ÍNDICE COLUMNAR'
-PRINT '-----------------------------------------------------------'
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT '6. MEDICIÓN DE RENDIMIENTO - CON ÍNDICE COLUMNAR'
+PRINT '═══════════════════════════════════════════════════════════'
 PRINT ''
 
--- Limpiar caché para comparación justa
+-- Limpiar caché nuevamente para comparación justa
 DBCC DROPCLEANBUFFERS;
 DBCC FREEPROCCACHE;
 GO
@@ -263,13 +296,14 @@ SET STATISTICS TIME ON;
 SET STATISTICS IO ON;
 
 PRINT ''
-PRINT '═════════════════════════════════════════════════════════════════════'
-PRINT 'CONSULTA 1: Ranking de listas por total de votos, CON indice columnar'
-PRINT '═════════════════════════════════════════════════════════════════════'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'CONSULTA 1: Ranking de listas por total de votos'
+PRINT 'CON índice columnar'
+PRINT '─────────────────────────────────────────────────────────────'
 
 DECLARE @inicio1_con DATETIME2 = SYSDATETIME();
 
--- Misma consulta que antes, ahora usará el índice columnar automáticamente
+-- Misma consulta, ahora usa índice columnar automáticamente
 SELECT 
     p.nombre_partido,
     l.lista_id,
@@ -286,20 +320,16 @@ ORDER BY total_votos DESC;
 DECLARE @fin1_con DATETIME2 = SYSDATETIME();
 DECLARE @tiempo1_con INT = DATEDIFF(MICROSECOND, @inicio1_con, @fin1_con);
 
--- Intentar recuperar tiempo anterior (puede fallar por batch separado)
-DECLARE @tiempo1_sin INT;
-SELECT @tiempo1_sin = CAST(value AS INT) FROM sys.extended_properties 
-WHERE name = 'tiempo1_sin';
-
 PRINT ''
 PRINT 'Tiempo con índice columnar: ' + CAST(@tiempo1_con/1000.0 AS VARCHAR(20)) + ' ms'
 PRINT ''
 
--------------------------------------------------
+-- ---------------------------------------------------------------
 
-PRINT '═══════════════════════════════════════════════════════════'
-PRINT 'CONSULTA 2: Análisis de votos por mesa, CON indice columnar'
-PRINT '═══════════════════════════════════════════════════════════'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'CONSULTA 2: Análisis de participación por mesa'
+PRINT 'CON índice columnar'
+PRINT '─────────────────────────────────────────────────────────────'
 
 DBCC DROPCLEANBUFFERS;
 DECLARE @inicio2_con DATETIME2 = SYSDATETIME();
@@ -321,11 +351,12 @@ PRINT ''
 PRINT 'Tiempo con índice columnar: ' + CAST(@tiempo2_con/1000.0 AS VARCHAR(20)) + ' ms'
 PRINT ''
 
--- -----------------------------------------------
+-- ---------------------------------------------------------------
 
-PRINT '══════════════════════════════════════════════════════════════════════'
-PRINT 'CONSULTA 3: Resultados finales con datos completos,CON índice columnar'
-PRINT '══════════════════════════════════════════════════════════════════════'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'CONSULTA 3: Resultados finales con ranking'
+PRINT 'CON índice columnar'
+PRINT '─────────────────────────────────────────────────────────────'
 
 DBCC DROPCLEANBUFFERS;
 DECLARE @inicio3_con DATETIME2 = SYSDATETIME();
@@ -354,56 +385,81 @@ PRINT ''
 SET STATISTICS TIME OFF;
 SET STATISTICS IO OFF;
 
+-- Calcular total con índices
+DECLARE @tiempo_total_con INT = @tiempo1_con + @tiempo2_con + @tiempo3_con;
+
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT 'RESUMEN - CON ÍNDICE COLUMNAR:'
+PRINT '  Consulta 1 (Ranking):       ' + RIGHT('        ' + CAST(@tiempo1_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  Consulta 2 (Por mesa):      ' + RIGHT('        ' + CAST(@tiempo2_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  Consulta 3 (Resultados):    ' + RIGHT('        ' + CAST(@tiempo3_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  ──────────────────────────────────────'
+PRINT '  TOTAL:                      ' + RIGHT('        ' + CAST(@tiempo_total_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT ''
 
 -- ============================================================================
--- PARTE 5: CONCLUSIONES FINALES
+-- PARTE 6: COMPARACIÓN Y ANÁLISIS DE RESULTADOS
 -- ============================================================================
 
 PRINT '═══════════════════════════════════════════════════════════'
-PRINT '5. CONCLUSIONES'
+PRINT '7. COMPARACIÓN DE RENDIMIENTO'
 PRINT '═══════════════════════════════════════════════════════════'
 PRINT ''
-PRINT 'VENTAJAS DE LOS ÍNDICES COLUMNARES:'
+PRINT 'NOTA: Las mejoras pueden variar según el volumen de datos.'
+PRINT 'Con conjuntos de datos más grandes (millones de registros),'
+PRINT 'las diferencias serán mucho más significativas.'
 PRINT ''
-PRINT '✓ Mayor velocidad en consultas analíticas'
-PRINT '  Al almacenar datos por columnas, el motor solo lee las columnas'
-PRINT '  necesarias, evitando información irrelevante.'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'Análisis por consulta:'
+PRINT '─────────────────────────────────────────────────────────────'
+PRINT 'Los índices columnares optimizan especialmente:'
+PRINT '  • Agregaciones (SUM, COUNT, AVG)'
+PRINT '  • Escaneos de columnas específicas'
+PRINT '  • Consultas con GROUP BY'
+PRINT '  • Compresión de datos repetitivos'
 PRINT ''
-PRINT '✓ Compresión de datos más eficiente'
-PRINT '  Los valores en una columna suelen ser similares o repetitivos,'
-PRINT '  lo que permite mejor compresión y menor uso de memoria.'
+
+-- ============================================================================
+-- PARTE 7: CONCLUSIONES Y RECOMENDACIONES
+-- ============================================================================
+
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT '8. CONCLUSIONES'
+PRINT '═══════════════════════════════════════════════════════════'
 PRINT ''
-PRINT '✓ Mejor aprovechamiento de recursos'
-PRINT '  Alta tasa de compresión facilita la carga en memoria y mejora'
-PRINT '  el desempeño general durante consultas.'
+PRINT ' VENTAJAS DE LOS ÍNDICES COLUMNARES:'
 PRINT ''
-PRINT '✓ Procesamiento paralelo optimizado'
-PRINT '  SQL Server puede ejecutar consultas sobre diferentes columnas'
-PRINT '  simultáneamente, aprovechando múltiples núcleos del procesador.'
+PRINT '  1. Mayor velocidad en consultas analíticas'
+PRINT '     Al leer solo columnas necesarias, evita I/O innecesario'
 PRINT ''
-PRINT 'APLICACIÓN EN SISTEMA DE VOTO ELECTRÓNICO:'
+PRINT '  2. Compresión eficiente de datos'
+PRINT '     Valores similares en columnas se comprimen mejor (~10x)'
 PRINT ''
-PRINT 'Tablas recomendadas:'
-PRINT '  - resultado_eleccion (totales finales)'
-PRINT '  - escrutinio_mesa (detalle por mesa)'
+PRINT '  3. Mejor uso de memoria'
+PRINT '     Menos datos en memoria = más eficiencia'
 PRINT ''
-PRINT 'NO recomendado en:'
-PRINT '  - Tabla voto (escritura continua durante votación)'
-PRINT '  - Tablas con actualizaciones frecuentes'
-PRINT '  - Tablas pequeñas de configuración'
+PRINT '  4. Procesamiento paralelo optimizado'
+PRINT '     Aprovecha múltiples núcleos del procesador'
 PRINT ''
-PRINT 'CONTEXTO OLTP vs OLAP:'
+PRINT '✓ APLICACIÓN EN SISTEMA DE VOTO ELECTRÓNICO:'
 PRINT ''
-PRINT '  OLTP (Transaccional): Registrar cada voto individual'
-PRINT '  → Usar índices B-tree tradicionales'
+PRINT '  Recomendado para:'
+PRINT '    • resultado_eleccion (totales consolidados)'
+PRINT '    • escrutinio_mesa (análisis por mesa)'
+PRINT '    • Datos históricos de elecciones'
 PRINT ''
-PRINT '  OLAP (Analítico): Generar reportes y estadísticas'
-PRINT '  → Usar índices columnares'
+PRINT '  NO recomendado para:'
+PRINT '    • Tabla voto (inserción continua durante votación)'
+PRINT '    • Tablas con UPDATE/DELETE frecuentes'
+PRINT '    • Tablas pequeñas (<1000 registros)'
 PRINT ''
-PRINT 'ESTRATEGIA HÍBRIDA RECOMENDADA:'
-PRINT ''
-PRINT '  1. Durante votación: Índices tradicionales en tabla voto'
-PRINT '  2. Post-votación: Crear índices columnares en escrutinio'
-PRINT '  3. Análisis histórico: Índices columnares para todas las elecciones'
-PRINT ''
+PRINT '═══════════════════════════════════════════════════════════'
+PRINT 'FIN DEL ANÁLISIS DE ÍNDICES COLUMNARES'
+PRINT '═══════════════════════════════════════════════════════════'
+
 GO
+
+
+
+
