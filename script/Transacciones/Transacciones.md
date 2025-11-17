@@ -51,13 +51,13 @@ En este bloque se justifica la transacción porque:
 
 **Aspectos técnicos a considerar**
 
-##### **1. Generación y protección del token de votación**
+#### **a. Generación y protección del token de votación**
 
 Para garantizar la seguridad del proceso electoral y preservar el anonimato del votante, se implementó un mecanismo seguro de generación de tokens utilizando funciones criptográficas proporcionadas por SQL Server.  
 Cuando un estudiante se presenta en la mesa de identificación, el sistema genera un token único y no reversible, que luego será utilizado exclusivamente para habilitar la emisión del voto.  
 Este token sirve como credencial de una sola vez y reemplaza cualquier dato personal del estudiante durante la votación.
 
-##### **2. Componentes utilizados para la generación del token**
+#### **b. Componentes utilizados para la generación del token**
 
 El token se construye a partir de una cadena de caracteres única compuesta por:
 
@@ -69,7 +69,7 @@ El token se construye a partir de una cadena de caracteres única compuesta por:
 Ejemplo de una cadena generada:  
 40123456-1-2025-11-18T10:32:15.197-77FE1E88-8C78-4C22-9325-080C6C865E81
 
-##### **3. Hash criptográfico mediante SHA-256**
+#### **c. Hash criptográfico mediante SHA-256**
 
 La cadena anterior no se almacena en la base de datos. En su lugar, se aplica la función: HASHBYTES('SHA2\_256', texto).  
 *SHA-256* es un algoritmo criptográfico seguro que produce un hash irreversible de 256 bits. Lo que significa que no es posible reconstruir la cadena original ni obtener datos personales del estudiante, no existen colisiones prácticas y nadie puede falsificar un token válido.
@@ -77,7 +77,7 @@ La cadena anterior no se almacena en la base de datos. En su lugar, se aplica la
 Ejemplo de token final almacenado  
 0xA4F8C1E6D4958C98B57A1A0C94D92AC0A1C8DBA19F447C0B3217F5158390F4AA
 
-##### **4. Implementación dentro de una transacción**
+#### **d. Implementación dentro de una transacción**
 
 La generación del token se realizó dentro de una transacción atómica, que garantiza que:
 
