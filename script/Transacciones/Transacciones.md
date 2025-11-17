@@ -29,7 +29,7 @@ Estas propiedades son esenciales para comprender los principios de consistencia 
 En un sistema de elecciones virtuales, existen varios procesos esenciales como la identificación del votante, la emisión del voto y el escrutinio, que requieren el uso de transacciones para garantizar seguridad y consistencia.  
 Para ello, se utilizan Stored Procedures que encapsulan estas operaciones, aplican validaciones y controlan las transacciones con mecanismos como ROLLBACK y SAVEPOINT, asegurando que cada paso crítico se ejecute de manera confiable y sin inconsistencias.
 
-1. ### **Mesa de identificacion:** 
+### **1. Mesa de identificacion:** 
 
 **Objetivo:** identificación del estudiante y generación del token de votación. Aplicación de la transacción simple.
 
@@ -41,7 +41,7 @@ Para ello, se utilizan Stored Procedures que encapsulan estas operaciones, aplic
 4. Guardar token.  
 5. Marcar que pasó por mesa de identificación.
 
-### **Justificación de la transacción simple:**
+**Justificación de la transacción simple:**
 
 En este bloque se justifica la transacción porque:
 
@@ -49,15 +49,15 @@ En este bloque se justifica la transacción porque:
 * Evita que quede un token generado pero no asociado o duplicado.  
 * Asegura que el votante no quede a medias.
 
-## **Aspectos técnicos a considerar**
+**Aspectos técnicos a considerar**
 
-1. ## **Generación y protección del token de votación**
+##### **1. Generación y protección del token de votación**
 
 Para garantizar la seguridad del proceso electoral y preservar el anonimato del votante, se implementó un mecanismo seguro de generación de tokens utilizando funciones criptográficas proporcionadas por SQL Server.  
 Cuando un estudiante se presenta en la mesa de identificación, el sistema genera un token único y no reversible, que luego será utilizado exclusivamente para habilitar la emisión del voto.  
 Este token sirve como credencial de una sola vez y reemplaza cualquier dato personal del estudiante durante la votación.
 
-2. ## **Componentes utilizados para la generación del token**
+##### **2. Componentes utilizados para la generación del token**
 
 El token se construye a partir de una cadena de caracteres única compuesta por:
 
@@ -69,7 +69,7 @@ El token se construye a partir de una cadena de caracteres única compuesta por:
 Ejemplo de una cadena generada:  
 40123456-1-2025-11-18T10:32:15.197-77FE1E88-8C78-4C22-9325-080C6C865E81
 
-3. ## **Hash criptográfico mediante SHA-256**
+##### **3. Hash criptográfico mediante SHA-256**
 
 La cadena anterior no se almacena en la base de datos. En su lugar, se aplica la función: HASHBYTES('SHA2\_256', texto).  
 *SHA-256* es un algoritmo criptográfico seguro que produce un hash irreversible de 256 bits. Lo que significa que no es posible reconstruir la cadena original ni obtener datos personales del estudiante, no existen colisiones prácticas y nadie puede falsificar un token válido.
@@ -77,7 +77,7 @@ La cadena anterior no se almacena en la base de datos. En su lugar, se aplica la
 Ejemplo de token final almacenado  
 0xA4F8C1E6D4958C98B57A1A0C94D92AC0A1C8DBA19F447C0B3217F5158390F4AA
 
-4. ## **Implementación dentro de una transacción**
+##### **4. Implementación dentro de una transacción**
 
 La generación del token se realizó dentro de una transacción atómica, que garantiza que:
 
@@ -90,7 +90,7 @@ La generación del token se realizó dentro de una transacción atómica, que garant
 
 Esto asegura integridad, seguridad y consistencia en el proceso electoral.
 
-2. ###  **Emisión del voto en mesa de votación**
+###  **2. Emisión del voto en mesa de votación**
 
 **Objetivo:** que el estudiante pueda registrar su voto. Aplicación de transacción simple con posibilidad de rollback.
 
@@ -117,7 +117,7 @@ Luego se debe realizar dos operaciones fundamentales:
 El cambio de estado del token actúa como un mecanismo de invalidación irreversible, evitando su reutilización y asegurando que el sufragio sea estrictamente único.   
 La transacción garantiza atomicidad: si alguna validación falla o si se produce un error durante el registro del voto, el sistema ejecuta un rollback, evitando inconsistencias como votos duplicados o tokens marcados incorrectamente.
 
-3. ### **Escrutinio y resultado elección**
+### **3. Escrutinio y resultado elección**
 
 **Objetivo:** recalcular el total de votos por mesa y obtener el resultado general de la elección, garantizando integridad incluso ante fallos en mesas individuales.
 
