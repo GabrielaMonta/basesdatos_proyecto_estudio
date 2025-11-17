@@ -49,19 +49,28 @@ BEGIN
             RAISERROR('El token ya fue utilizado. No puede votar nuevamente.', 16, 1);
         END;
 
+        -- 3) Verificar que la lista tenga candidatos
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM lista_cargos
+            WHERE lista_id = @ListaId
+        )
+        BEGIN
+            RAISERROR('La lista seleccionada no posee candidatos. No puede emitirse el voto.', 16, 1);
+        END;
 
-        -- 3) Insertar el voto en la tabla voto
+        -- 4) Insertar el voto en la tabla voto
         INSERT INTO voto (token_id, lista_id, mesa_votacion_id)
         VALUES (@TokenId, @ListaId, @MesaVotacionId);
 
 
-        -- 4) Actualizar token a usado = 1
+        -- 5) Actualizar token a usado = 1
         UPDATE token_votante
         SET usado = 1
         WHERE token_id = @TokenId;
 
 
-        -- 5) Si todo es correcto, entonces se guardan los cambios
+        -- 6) Si todo es correcto, entonces se guardan los cambios
         COMMIT TRAN;
     END TRY
 
@@ -98,8 +107,15 @@ EXEC sp_RegistrarVoto
 EXEC sp_RegistrarVoto 31, 1, 1;
 
 
---Caso de fallo: queremos votar con un token que no existe
+--Caso de fallo 2: queremos votar con un token que no existe
 EXEC sp_RegistrarVoto 9999, 1, 1;
+
+
+--Caso de fallo 3: queremos votar a una lista vacia (lista_id 3 esta vacia)
+EXEC sp_RegistrarVoto 
+    @TokenId = 32,
+    @ListaId = 3,
+    @MesaVotacionId = 1;
 
 ---------------------------------------------------------------------------
 		                -- 4. Verificaciones --
@@ -107,8 +123,8 @@ EXEC sp_RegistrarVoto 9999, 1, 1;
 SELECT * FROM voto WHERE token_id = 31;
 SELECT usado FROM token_votante WHERE token_id = 31;
 
-
-
+SELECT * FROM voto WHERE token_id = 32;
+SELECT usado FROM token_votante WHERE token_id = 32;
 
 
 ---------------------------------------------------------------------------

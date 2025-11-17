@@ -112,7 +112,11 @@ INSERT INTO carrera_estudiante (carrera_id, documento_estudiante, año_ingreso, 
 VALUES (1, 37000001, '2023-03-01', 1),   -- Regular
        (1, 36000002, '2023-03-01', 2);   -- Egresado/NO-Regular
 
+INSERT INTO estudiante (documento_estudiante, nombre, apellido, email)
+VALUES (37000003, 'Martina', 'Perez', 'marti.perez@unne.edu.ar');
 
+INSERT INTO carrera_estudiante (carrera_id, documento_estudiante, año_ingreso, estado_id)
+VALUES (1, 37000003, '2023-03-01', 1);
 
 ---------------------------------------------------------------------------
 		  -- 3. Prueba de registro en mesa de identificacion --
@@ -120,6 +124,10 @@ VALUES (1, 37000001, '2023-03-01', 1),   -- Regular
 -- Caso exitoso
 EXEC sp_RegistrarEnMesaIdentificacion
     @DocumentoEstudiante = 37000001,
+    @MesaIdentificacionId = 1;
+
+EXEC sp_RegistrarEnMesaIdentificacion
+    @DocumentoEstudiante = 37000003,
     @MesaIdentificacionId = 1;
 
 -- Caso que debe fallar (no es Regular)
@@ -133,7 +141,7 @@ EXEC sp_RegistrarEnMesaIdentificacion 37000001, 2;
 ---------------------------------------------------------------------------
 		                -- 4. Verificaciones --
 ---------------------------------------------------------------------------
-SELECT * FROM mesa_identificacion_estudiante WHERE documento_estudiante IN (37000001, 36000002);
+SELECT * FROM mesa_identificacion_estudiante WHERE documento_estudiante IN (37000001, 36000002, 37000003);
 SELECT * FROM token_votante ORDER BY token_id DESC;
 
 
