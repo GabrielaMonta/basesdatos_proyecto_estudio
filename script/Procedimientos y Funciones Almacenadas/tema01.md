@@ -133,7 +133,7 @@ Toda la lógica permanece en un solo lugar. Si cambia una regla (por ejemplo, val
 
 ## Pruebas de Eficiencia
 
-Se midió el rendimiento utilizando `SYSDATETIME()`:
+Se midió el rendimiento utilizando `SYSDATETIME()`,permite obtener resultados en ms, y mas efectivo que con getDate():
 ```sql
 DECLARE @inicio DATETIME2 = SYSDATETIME();
 -- Ejecución de alto volumen de operaciones sin validaciones
