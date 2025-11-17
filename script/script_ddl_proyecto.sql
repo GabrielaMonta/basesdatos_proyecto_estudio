@@ -153,11 +153,18 @@ CREATE TABLE mesa_identificacion
 (
   mesa_identificacion_id INT IDENTITY(1,1) NOT NULL,
   nro_mesa_identificacion INT NOT NULL,
-  documento_estudiante INT NOT NULL,
   eleccion_id INT NOT NULL,
- CONSTRAINT PK_mesa_identificacion PRIMARY KEY (mesa_identificacion_id),
- CONSTRAINT FK_mesa_identificacion_estudiante FOREIGN KEY (documento_estudiante) REFERENCES estudiante(documento_estudiante),
- CONSTRAINT FK_mesa_identificacion_eleccion FOREIGN KEY (eleccion_id) REFERENCES eleccion(eleccion_id)
+  CONSTRAINT PK_mesa_identificacion PRIMARY KEY (mesa_identificacion_id),
+  CONSTRAINT FK_mesa_identificacion_eleccion FOREIGN KEY (eleccion_id) REFERENCES eleccion(eleccion_id)
+);
+
+CREATE TABLE mesa_identificacion_estudiante
+(
+  documento_estudiante INT NOT NULL,
+  mesa_identificacion_id INT NOT NULL,
+  CONSTRAINT PK_mesa_identificacion_estudiante PRIMARY KEY (documento_estudiante, mesa_identificacion_id),
+  CONSTRAINT FK_mesa_identificacion_estudiante_estudiante FOREIGN KEY (documento_estudiante) REFERENCES estudiante(documento_estudiante),
+  CONSTRAINT FK_mesa_identificacion_estudiante_mesa_identificacion FOREIGN KEY (mesa_identificacion_id) REFERENCES mesa_identificacion(mesa_identificacion_id)
 );
 
 CREATE TABLE token_votante
@@ -166,6 +173,7 @@ CREATE TABLE token_votante
   codigo_token varbinary(64) NOT NULL,
   usado BIT NOT NULL DEFAULT 0,
   mesa_identificacion_id INT NOT NULL,
+  fecha_entrega DATETIME2 DEFAULT SYSDATETIME() ,
   CONSTRAINT PK_token_votante PRIMARY KEY (token_id),
   CONSTRAINT FK_token_votante_mesa_identificacion FOREIGN KEY (mesa_identificacion_id) REFERENCES mesa_identificacion(mesa_identificacion_id),
   CONSTRAINT UQ_codigo_token UNIQUE (codigo_token)
