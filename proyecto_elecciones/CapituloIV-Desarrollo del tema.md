@@ -4,15 +4,14 @@ y documentación técnica. En este capítulo se presentan los resultados estruct
 
 ### Diagrama relacional
 El diagrama relacional final refleja la estructura lógica implementada en SQL Server, incluyendo claves primarias, claves foráneas y relaciones cardinales.
-![diagrama_relacional](recursos/Diagrama_relacional_actualizado.png)
+![diagrama_relacional](main/recursos/Diagrama_relacional_actualizado.png)
 
 ### Diccionario de datos
 El diccionario describe cada tabla, campo, tipo de dato, clave y restricción utilizada en el sistema.
 Acceso al documento [PDF](recursos/Diccionario__de__Datos.pdf) del diccionario de datos.
 
-
 ### Desarrollo TEMA 1 "Procedimientos y funciones almacenadas"
-> Acceder a la siguiente carpeta para la descripción completa del tema [script-> Procedimientos](script/Procedimientos__y__Funciones__Almacenadas)
+> Acceder a la siguiente carpeta para la descripción completa del tema [script-> Procedimientos](basesdatos_proyecto_estudio/blob/mainscript/Procedimientos__y__Funciones__Almacenadas)
 
 ### Desarrollo TEMA 2 "Optimizacion de consultas a traves de indices"
 > Acceder a la siguiente carpeta para la descripción completa del tema [script-> Optimizacion](script/Optimizacion__de__consultas)
