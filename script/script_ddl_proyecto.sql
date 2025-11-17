@@ -173,7 +173,7 @@ CREATE TABLE token_votante
   codigo_token varbinary(64) NOT NULL,
   usado BIT NOT NULL DEFAULT 0,
   mesa_identificacion_id INT NOT NULL,
-  fecha_entrega DATETIME2 NOT NULL,
+  fecha_entrega DATETIME2 DEFAULT SYSDATETIME() ,
   CONSTRAINT PK_token_votante PRIMARY KEY (token_id),
   CONSTRAINT FK_token_votante_mesa_identificacion FOREIGN KEY (mesa_identificacion_id) REFERENCES mesa_identificacion(mesa_identificacion_id),
   CONSTRAINT UQ_codigo_token UNIQUE (codigo_token)

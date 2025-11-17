@@ -183,22 +183,22 @@ VALUES
     (2, 35345678, '2019-03-01', NULL, 1),
     (2, 35456789, '2020-02-01', NULL, 1),
     (1, 35567890, '2020-03-01', NULL, 1),
-    (1, 35678901, '2020-02-01', NULL, 1);
-    (3, 36456789, '2018-03-01', NULL, 1);
-    (3, 36345678, '2018-02-01', NULL, 1);
-    (2, 36234567, '2019-02-01', NULL, 1);
-    (2, 36123456, '2019-03-01', NULL, 1);
-    (1, 36012345, '2020-02-01', NULL, 1);
-    (1, 35901234, '2020-03-01', NULL, 1);
-    (1, 35890123, '2021-02-01', NULL, 1);
-    (1, 35789012, '2021-03-01', NULL, 1);
-    (3, 40901234, '2022-03-01', NULL, 1);
-    (3, 41012345, '2022-02-01', NULL, 1);
-    (2, 41123456, '2021-03-01', NULL, 1);
-    (2, 41234567, '2021-02-01', NULL, 1);
-    (1, 41345678, '2020-03-01', NULL, 1);
-    (1, 41456789, '2020-02-01', NULL, 1);
-    (1, 41567890, '2019-03-01', NULL, 1);
+    (1, 35678901, '2020-02-01', NULL, 1),
+    (3, 36456789, '2018-03-01', NULL, 1),
+    (3, 36345678, '2018-02-01', NULL, 1),
+    (2, 36234567, '2019-02-01', NULL, 1),
+    (2, 36123456, '2019-03-01', NULL, 1),
+    (1, 36012345, '2020-02-01', NULL, 1),
+    (1, 35901234, '2020-03-01', NULL, 1),
+    (1, 35890123, '2021-02-01', NULL, 1),
+    (1, 35789012, '2021-03-01', NULL, 1),
+    (3, 40901234, '2022-03-01', NULL, 1),
+    (3, 41012345, '2022-02-01', NULL, 1),
+    (2, 41123456, '2021-03-01', NULL, 1),
+    (2, 41234567, '2021-02-01', NULL, 1),
+    (1, 41345678, '2020-03-01', NULL, 1),
+    (1, 41456789, '2020-02-01', NULL, 1),
+    (1, 41567890, '2019-03-01', NULL, 1),
     (1, 41678901, '2019-02-01', NULL, 1);
 
 -- Ver resultado
@@ -270,8 +270,7 @@ INSERT INTO cargo_banca (cargo_id, banca_id, orden_id)
 VALUES (1, 1, 1), -- Presidente, Banca Titular, Orden 1
        (2, 1, 1), -- Vicepresidente, Banca Titular, Orden 1
        (3, 1, 1), -- Secretario, Banca Titular, Orden 1
-       (4, 1, 1); -- Tesorero, Banca Titular, Orden 1
-
+       (4, 1, 1), -- Tesorero, Banca Titular, Orden 1
        (3, 2, 1), -- Secretario, Banca Suplente, Orden 1
        (3, 2, 2), -- Secretario, Banca Suplente, Orden 2
        (4, 2, 1); -- Tesorero, Banca Suplente, Orden 1
@@ -289,15 +288,15 @@ VALUES (1, 1, 1, 35123456), -- Juan Pérez - Presidente
        (3, 1, 1, 35345678), -- Carlos López - Secretario
        (4, 1, 1, 35456789), -- Ana Martínez - Tesorero Titular
        (3, 2, 1, 35567890), -- Pedro Fernández - Secretario Suplente 1
-       (3, 2, 2, 35678901); -- Laura Rodríguez - Secretario Suplente 2
-       (4, 2, 1, 41678901); -- Ezequiel Suárez - Tesorero Suplente
+       (3, 2, 2, 35678901), -- Laura Rodríguez - Secretario Suplente 2
+       (4, 2, 1, 41678901), -- Ezequiel Suárez - Tesorero Suplente
 
        (1, 1, 1, 41123456), -- Jazmín Romero - Presidente 
        (2, 1, 1, 41234567), -- Tomás Herrera - Vicepresidente
        (3, 1, 1, 40123456), -- Sofía García - Secretario
        (4, 1, 1, 36345678), -- Nicolás Medina - Tesorero Titular
        (3, 2, 1, 40567890), -- Camila Vega - Secretario Suplente 1
-       (3, 2, 2, 40890123); -- Lucas Ortiz - Secretario Suplente 2
+       (3, 2, 2, 40890123), -- Lucas Ortiz - Secretario Suplente 2
        (4, 2, 1, 36456789); -- Julieta Figueroa - Tesorero Suplente
 
 -- Ver resultado
@@ -315,15 +314,15 @@ VALUES
        (1, 3, 1, 1, 35345678), -- Carlos López - Secretario
        (1, 4, 1, 1, 35456789), -- Ana Martínez - Tesorero Titular
        (1, 3, 2, 1, 35567890), -- Pedro Fernández - Secretario Suplente 1
-       (1, 3, 2, 2, 35678901); -- Laura Rodríguez - Secretario Suplente 2
-       (1, 4, 2, 1, 41678901); -- Ezequiel Suárez - Tesorero Suplente
+       (1, 3, 2, 2, 35678901), -- Laura Rodríguez - Secretario Suplente 2
+       (1, 4, 2, 1, 41678901), -- Ezequiel Suárez - Tesorero Suplente
 --Lista Naranja
        (2, 1, 1, 1, 41123456), -- Jazmín Romero - Presidente 
        (2, 2, 1, 1, 41234567), -- Tomás Herrera - Vicepresidente
        (2, 3, 1, 1, 40123456), -- Sofía García - Secretario
        (2, 4, 1, 1, 36345678), -- Nicolás Medina - Tesorero Titular
        (2, 3, 2, 1, 40567890), -- Camila Vega - Secretario Suplente 1
-       (2, 3, 2, 2, 40890123); -- Lucas Ortiz - Secretario Suplente 2
+       (2, 3, 2, 2, 40890123), -- Lucas Ortiz - Secretario Suplente 2
        (2, 4, 2, 1, 36456789); -- Julieta Figueroa - Tesorero Suplente
 
 -- Ver resultado
@@ -368,24 +367,24 @@ VALUES (1, 40123456),
     (1, 35345678),
     (1, 35456789),
     (1, 35567890),
-    (1, 35678901);
+    (1, 35678901),
 
 
-    (2, 36456789);
-    (2, 36345678;
-    (2, 36234567);
-    (2, 36123456);
-    (2, 36012345);
-    (2, 35901234);
-    (2, 35890123);
-    (2, 35789012);
-    (2, 40901234);
-    (2, 41012345);
-    (2, 41123456);
-    (2, 41234567);
-    (2, 41345678);
-    (2, 41456789);
-    (2, 41567890);
+    (2, 36456789),
+    (2, 36345678),
+    (2, 36234567),
+    (2, 36123456),
+    (2, 36012345),
+    (2, 35901234),
+    (2, 35890123),
+    (2, 35789012),
+    (2, 40901234),
+    (2, 41012345),
+    (2, 41123456),
+    (2, 41234567),
+    (2, 41345678),
+    (2, 41456789),
+    (2, 41567890),
     (2, 41678901);
 
 -- ----------------------------------------------------------------------------
@@ -398,6 +397,8 @@ VALUES (1), (2);
 SELECT * FROM mesa_votacion;
 GO
 
+
+select * from token_votante
 -- ----------------------------------------------------------------------------
 -- TABLA: token_votante
 -- ----------------------------------------------------------------------------
@@ -409,15 +410,15 @@ VALUES
     (HASHBYTES('SHA2_256', 'token4'), 1, 0),
     (HASHBYTES('SHA2_256', 'token5'), 1, 0),
     (HASHBYTES('SHA2_256', 'token6'), 1, 0),
-    (HASHBYTES('SHA2_256', 'token7'), 1, 0);
+    (HASHBYTES('SHA2_256', 'token7'), 1, 0),
     (HASHBYTES('SHA2_256', 'token8'), 1, 0),
     (HASHBYTES('SHA2_256', 'token9'), 1, 0),
     (HASHBYTES('SHA2_256', 'token10'), 1, 0),
     (HASHBYTES('SHA2_256', 'token11'), 1, 0),
     (HASHBYTES('SHA2_256', 'token12'), 1, 0),
     (HASHBYTES('SHA2_256', 'token13'), 1, 0),
-    (HASHBYTES('SHA2_256', 'token14'), 1, 0);
-    (HASHBYTES('SHA2_256', 'token15'), 1, 0);
+    (HASHBYTES('SHA2_256', 'token14'), 1, 0),
+    (HASHBYTES('SHA2_256', 'token15'), 1, 0),
 
     (HASHBYTES('SHA2_256', 'token16'), 2, 0),
     (HASHBYTES('SHA2_256', 'token17'), 2, 0),
@@ -425,99 +426,75 @@ VALUES
     (HASHBYTES('SHA2_256', 'token19'), 2, 0),
     (HASHBYTES('SHA2_256', 'token20'), 2, 0),
     (HASHBYTES('SHA2_256', 'token21'), 2, 0),
-    (HASHBYTES('SHA2_256', 'token22'), 2, 0);
+    (HASHBYTES('SHA2_256', 'token22'), 2, 0),
     (HASHBYTES('SHA2_256', 'token23'), 2, 0),
     (HASHBYTES('SHA2_256', 'token24'), 2, 0),
     (HASHBYTES('SHA2_256', 'token25'), 2, 0),
     (HASHBYTES('SHA2_256', 'token26'), 2, 0),
     (HASHBYTES('SHA2_256', 'token27'), 2, 0),
     (HASHBYTES('SHA2_256', 'token28'), 2, 0),
-    (HASHBYTES('SHA2_256', 'token29'), 2, 0);
+    (HASHBYTES('SHA2_256', 'token29'), 2, 0),
     (HASHBYTES('SHA2_256', 'token30'), 2, 0);
 
 
+    select * from voto
 -- ----------------------------------------------------------------------------
 -- TABLA: voto
 -- ----------------------------------------------------------------------------
-INSERT INTO voto (token_id, lista_id)
+--NOTA: CAMBIAR EL TOKEN_ID '31' POR 1
+INSERT INTO voto (token_id, lista_id, mesa_votacion_id)
 VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1),
-(8, 1),
-(9, 1),
-(10, 1),
+(31, 1, 1),
+(2, 1, 1),
+(3, 1, 1),
+(4, 1, 1),
+(5, 1, 1),
+(6, 1, 1),
+(7, 1, 1),
+(8, 1, 1),
+(9, 1, 1),
+(10, 1, 1),
+(11, 2, 1),
+(12, 2, 1),
+(13, 2, 1),
+(14, 2, 1),
+(15, 2, 2),
+(16, 2, 2),
+(17, 2, 2),
+(18, 2, 2),
+(19, 2, 2),
+(20, 2, 2),
+(21, 2, 2),
+(22, 2, 2),
+(23, 2, 2),
+(24, 2, 2),
+(25, 2, 2),
+(26, 2, 2),
+(27, 2, 2),
+(28, 2, 2),
+(29, 2, 2),
+(30, 2, 2);
 
-(11, 2),
-(12, 2),
-(13, 2),
-(14, 2),
-(15, 2),
-(16, 2),
-(17, 2),
-(18, 2),
-(19, 2),
-(20, 2),
-(21, 2),
-(22, 2),
-(23, 2),
-(24, 2),
-(25, 2),
-(26, 2),
-(27, 2),
-(28, 2),
-(29, 2),
-(30, 2),
 
--- ----------------------------------------------------------------------------
--- TABLA: mesa_votacion
--- ----------------------------------------------------------------------------
-INSERT INTO mesa_votacion_token (mesa_votacion_id, token_id)
-VALUES (1, 1),
-    (1, 2),
-    (1, 3),
-    (1, 4),
-    (1, 5),
-    (1, 6),
-    (1, 7),
-    (1, 8),
-    (1, 9),
-    (1, 10),
-    (1, 11),
-    (1, 12),
-    (1, 13),
-    (1, 14),
-    (2, 15),
-    (2, 16),
-    (2, 17),
-    (2, 18),
-    (2, 19),
-    (2, 20),
-    (2, 21),
-    (2, 22),
-    (2, 23),
-    (2, 24),
-    (2, 25),
-    (2, 26),
-    (2, 27),
-    (2, 28),
-    (2, 29),
-    (2, 30);
-
--- Ver resultado
-SELECT * FROM token_votante;
-GO
-
--------------------------------------------------------------------------------
--- TABLA: escrutinio_mesa
--- ----------------------------------------------------------------------------
 INSERT INTO escrutinio_mesa (lista_id, mesa_votacion_id, cantidad_votos)
-VALUES
-(1, 1, 7),
-(1, 2, 7),
-(2, 1, 8),
-(2, 2, 8),
+SELECT 
+    lista_id,
+    mesa_votacion_id,
+    COUNT(*) AS cantidad_votos
+FROM voto
+GROUP BY 
+    lista_id,
+    mesa_votacion_id;
+
+select * from escrutinio_mesa
+
+--Resultado elección
+INSERT INTO resultado_eleccion (lista_id, eleccion_id, resultado)
+SELECT 
+    lista_id,
+    1 AS eleccion_id,
+    SUM(cantidad_votos) AS resultado_total
+FROM escrutinio_mesa
+GROUP BY lista_id;
+
+select * from resultado_eleccion
