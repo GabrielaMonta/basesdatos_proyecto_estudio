@@ -1,40 +1,27 @@
 ## CAPÍTULO IV: DESARROLLO DEL TEMA / PRESENTACIÓN DE RESULTADOS 
+Durante el desarrollo del trabajo se obtuvieron diferentes productos intermedios y finales, tales como diagramas, scripts, procedimientos 
+y documentación técnica. En este capítulo se presentan los resultados estructurados en función de cada una de las etapas desarrolladas.
 
-Maecenas molestie lacus tincidunt, placerat dolor et, ullamcorper erat. Mauris tortor nisl, ultricies ac scelerisque nec, feugiat in nibh. Pellentesque interdum aliquam magna sit amet rutrum. 
-
-
-
-### Diagrama conceptual (opcional)
-Ejemplo usando Live Editor https://mermaid.js.org/ (ejemplo opcional)
-```mermaid
-erDiagram
-CUSTOMER  }|..|{  DELIVERY-ADDRESS  : has
-CUSTOMER  ||--o{  ORDER  : places
-CUSTOMER  ||--o{  INVOICE  : "liable for"
-DELIVERY-ADDRESS  ||--o{  ORDER  : receives
-INVOICE  ||--|{  ORDER  : covers
-ORDER  ||--|{  ORDER-ITEM  : includes
-PRODUCT-CATEGORY  ||--|{  PRODUCT  : contains
-PRODUCT  ||--o{  ORDER-ITEM  : "ordered in"
-```
 ### Diagrama relacional
-![diagrama_relacional](https://github.com/dovillegas/basesdatos_proyecto_estudio/blob/main/doc/image_relational.png)
+El diagrama relacional final refleja la estructura lógica implementada en SQL Server, incluyendo claves primarias, claves foráneas y relaciones cardinales.
+![diagrama_relacional](/recursos/Diagrama_relacional_actualizado.png)
 
 ### Diccionario de datos
+El diccionario describe cada tabla, campo, tipo de dato, clave y restricción utilizada en el sistema.
+Acceso al documento [PDF](recursos/Diccionario__de__Datos.pdf) del diccionario de datos.
 
-Acceso al documento [PDF](doc/diccionario_datos.pdf) del diccionario de datos.
+### Desarrollo TEMA 1 "Procedimientos y funciones almacenadas"
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/Procedimientos_y_Funciones_Almacenadas`](script/Procedimientos_y_Funciones_Almacenadas)
 
+### Desarrollo TEMA 2 "Optimizacion de consultas a traves de indices"
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/tema02_nombre_tema`](script/tema02_nombre_tema)
 
-### Desarrollo TEMA 1 "----"
+### Desarrollo TEMA 3 "Manejo de transacciones y transacciones anidadas"
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/Transacciones`](script/Transacciones)
 
-Fusce auctor finibus lectus, in aliquam orci fermentum id. Fusce sagittis lacus ante, et sodales eros porta interdum. Donec sed lacus et eros condimentum posuere. 
-
-> Acceder a la siguiente carpeta para la descripción completa del tema [scripts-> tema_1](script/tema01_nombre_tema)
-
-### Desarrollo TEMA 2 "----"
-
-Proin aliquet mauris id ex venenatis, eget fermentum lectus malesuada. Maecenas a purus arcu. Etiam pellentesque tempor dictum. 
-
-> Acceder a la siguiente carpeta para la descripción completa del tema [scripts-> tema_2](script/tema02_nombre_tema)
-
-... 
+### Desarrollo TEMA 4 "Indices columnares"
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/tema02_nombre_tema`](script/tema02_nombre_tema)
