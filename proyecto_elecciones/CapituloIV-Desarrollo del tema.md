@@ -11,13 +11,17 @@ El diccionario describe cada tabla, campo, tipo de dato, clave y restricción ut
 Acceso al documento [PDF](recursos/Diccionario__de__Datos.pdf) del diccionario de datos.
 
 ### Desarrollo TEMA 1 "Procedimientos y funciones almacenadas"
-> Acceder a la siguiente carpeta para la descripción completa del tema [script-> Procedimientos](basesdatos_proyecto_estudio/blob/mainscript/Procedimientos__y__Funciones__Almacenadas)
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/Procedimientos_y_Funciones_Almacenadas`](script/Procedimientos_y_Funciones_Almacenadas)
 
 ### Desarrollo TEMA 2 "Optimizacion de consultas a traves de indices"
-> Acceder a la siguiente carpeta para la descripción completa del tema [script-> Optimizacion](script/Optimizacion__de__consultas)
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/tema02_nombre_tema`](script/tema02_nombre_tema)
 
 ### Desarrollo TEMA 3 "Manejo de transacciones y transacciones anidadas"
-> Acceder a la siguiente carpeta para la descripción completa del tema [script-> Transacciones](script/Transacciones)
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/Transacciones`](script/Transacciones)
 
 ### Desarrollo TEMA 4 "Indices columnares"
-> Acceder a la siguiente carpeta para la descripción completa del tema [script-> Indices Columnares](script/Indices__columnares)
+> Acceder a la siguiente carpeta para la descripción completa del tema  
+> [`script/tema02_nombre_tema`](script/tema02_nombre_tema)
