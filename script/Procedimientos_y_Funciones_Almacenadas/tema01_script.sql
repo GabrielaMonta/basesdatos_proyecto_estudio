@@ -80,7 +80,7 @@ GO
 PRINT '✅ Procedimiento sp_InsertarEstudiante creado';
 GO
 -- ====================================================
--- 🔹 INSERCIÓN  DE ESTUDIANTES UTILIZANDO PROCEDIMINETOS
+--  INSERCIÓN  DE ESTUDIANTES UTILIZANDO PROCEDIMINETOS
 -- ====================================================
 
 -- NUEVOS ESTUDIANTES (LOTE 1)
@@ -404,7 +404,7 @@ GO
 
 
 -- ====================================================
--- 🔹 DELETE DIRECTO DE ESTUDIANTES 
+--  DELETE DIRECTO DE ESTUDIANTES 
 -- ====================================================
 
 PRINT '--- ELIMINAR ESTUDIANTES (DELETE DIRECTO) ---'
@@ -432,7 +432,7 @@ WHERE documento_estudiante IN (43111222, 43222333, 43333444, 43444555);
 GO
 
 -- ====================================================
--- 🔹 DELETE USANDO PROCEDIMIENTOS ALMACENADOS
+--  DELETE USANDO PROCEDIMIENTOS ALMACENADOS
 -- ====================================================
 
 -- ----------------------------------------------------------------------------
@@ -541,7 +541,7 @@ GO
 
 
 -- ====================================================
--- 🔹 EJECUCIÓN DE DELETE CON PROCEDIMIENTOS
+--  EJECUCIÓN DE DELETE CON PROCEDIMIENTOS
 -- ====================================================
 
 PRINT '--- ELIMINAR ESTUDIANTES USANDO PROCEDIMIENTO ---';

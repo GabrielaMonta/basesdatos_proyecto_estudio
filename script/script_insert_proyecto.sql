@@ -475,6 +475,13 @@ VALUES
 (29, 2, 2),
 (30, 2, 2);
 
+--Actualizacion de token usado
+UPDATE token_votante
+SET usado = 1
+WHERE token_id IN (
+    SELECT token_id
+    FROM voto
+);
 
 INSERT INTO escrutinio_mesa (lista_id, mesa_votacion_id, cantidad_votos)
 SELECT 
