@@ -24,4 +24,4 @@ Acceso al documento [PDF](recursos/Diccionario__de__Datos.pdf) del diccionario d
 
 ### Desarrollo TEMA 4 "Indices columnares"
 > Acceder a la siguiente carpeta para la descripción completa del tema  
-> [`script/tema02_nombre_tema`](script/tema02_nombre_tema)
+> [`script/tema02_nombre_tema`](script/Indices_Columnares_)
