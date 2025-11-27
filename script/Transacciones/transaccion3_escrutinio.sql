@@ -26,7 +26,7 @@ BEGIN
 
         -- 2. Recalcular escrutinio mesa por mesa con SAVEPOINT
         DECLARE @MesaId INT;
-
+        --recorremos cada mesa usando un cursor
         DECLARE cursorMesas CURSOR FOR
             SELECT mesa_votacion_id
             FROM mesa_votacion;
