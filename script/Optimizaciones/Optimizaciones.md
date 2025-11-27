@@ -89,4 +89,3 @@ La tabla auditoria_votos permite:
 4. Crear un índice agrupado (clustered) sobre fecha\_emision y medir mejoras.  
 5. Eliminar ese índice y crear uno con INCLUDE para evitar Key Lookups.  
 6. Documentar planes de ejecución (Scan vs Seek) y tiempos.  
-7. Cumplir 100% con la consigna de optimización sin alterar el modelo principal.
