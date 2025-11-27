@@ -1,75 +1,93 @@
 ---------------------------------------------------------------------------
--- Para realizar la Prueba 3 (CONSULTA CON ÍNDICE COVERING)
--- 1. Se procede a quitar el índice clustered para probar la tercera opción (índice covering)
--- 2. Creamos el indice NONCLUSTERED. Este es el índice más inteligente porque:
---   - Mantiene la PK como clustered (en id)
---   - Crea un índice separado en fecha_emision
---   - Incluye las columnas mesa, lista, descripcion
---   - Evita el "Key Lookup" (no necesita ir a la tabla base)
--- Luego procedemos a ejecutar la misma consulta pero ahora con el índice covering. 
--- Se espera que sea el más eficiente, con lecturas similares o mejores que la Prueba 2.B 
+---------------------------------------------------------------------------
+          -- PRUEBA 3 – ÍNDICE NONCLUSTERED CON INCLUDE (COVERING)
+---------------------------------------------------------------------------
+-- ** Objetivo **
+-- Medir el rendimiento de un índice NONCLUSTERED sobre fecha_emision que,
+-- además, incluya las columnas mesa y lista.  
+-- Este tipo de índice cubre totalmente la consulta, evitando Key Lookups.
+
+-- ** Justificación **
+-- Un índice nonclustered permite mantener la tabla ordenada por la PK
+-- clustered original (id), lo cual preserva el diseño base.
+--  - Agregar columnas con INCLUDE permite que la consulta recupere todos los 
+--    datos necesarios directamente desde el índice, sin leer la tabla completa.
+--  - Esto reduce I/O y vuelve la búsqueda por rango aún más eficiente.
 ---------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------
-			-- 1. ELIMINANDO ÍNDICE CLUSTERED --
+                   -- 1. LIMPIEZA DE ÍNDICES PREVIOS
+-- Garantiza que solo influya el índice que estamos evaluando.
 ---------------------------------------------------------------------------
 
-
--- Eliminar índice clustered en fecha_emision
-DROP INDEX IX_auditoria_votos_fecha ON auditoria_votos;
+-- 1A. Borrar índice covering si existe
+IF EXISTS (SELECT 1 
+           FROM sys.indexes 
+           WHERE name = 'IX_auditoria_votos_fecha_COVERING')
+    DROP INDEX IX_auditoria_votos_fecha_COVERING ON auditoria_votos;
 GO
 
--- Restaurar PK como clustered (configuración original)
-ALTER TABLE auditoria_votos 
-DROP CONSTRAINT PK_auditoria_votos;
+-- 1B. Borrar índice clustered de fecha si existe (de Prueba 2)
+IF EXISTS (SELECT 1 
+           FROM sys.indexes 
+           WHERE name = 'IX_auditoria_votos_fecha')
+    DROP INDEX IX_auditoria_votos_fecha ON auditoria_votos;
 GO
 
-ALTER TABLE auditoria_votos 
+-- 1C. Restaurar PK como CLUSTERED (estado original de la tabla)
+IF EXISTS (
+    SELECT 1 FROM sys.key_constraints
+    WHERE parent_object_id = OBJECT_ID('auditoria_votos')
+      AND name = 'PK_auditoria_votos'
+)
+BEGIN
+    ALTER TABLE auditoria_votos DROP CONSTRAINT PK_auditoria_votos;
+END
+GO
+
+ALTER TABLE auditoria_votos
 ADD CONSTRAINT PK_auditoria_votos PRIMARY KEY CLUSTERED (id);
 GO
 
----------------------------------------------------------------------------
-           -- 2. CREANDO ÍNDICE NONCLUSTERED CON INCLUDE (COVERING)
----------------------------------------------------------------------------
 
+---------------------------------------------------------------------------
+        -- 2. CREAR ÍNDICE NONCLUSTERED CON INCLUDE (COVERING)
+-- Este índice optimiza la consulta sin alterar el orden físico de la tabla.
+---------------------------------------------------------------------------
 
 CREATE NONCLUSTERED INDEX IX_auditoria_votos_fecha_COVERING
 ON auditoria_votos(fecha_emision DESC)
-INCLUDE (mesa, lista, descripcion);
+INCLUDE (mesa, lista);
 GO
 
-PRINT 'Índice covering creado exitosamente.';
-PRINT '';
-PRINT 'Características:';
-PRINT '  - Clave del índice: fecha_emision (DESC)';
-PRINT '  - Columnas incluidas: mesa, lista, descripcion';
-PRINT '  - Beneficio: Evita Key Lookup (acceso a tabla base)';
-PRINT '';
-
 
 ---------------------------------------------------------------------------
-          -- PRUEBA 3: CONSULTA CON ÍNDICE NONCLUSTERED + INCLUDE';
+                    -- 2. LIMPIAR CACHÉS DEL MOTOR
+-- Esto garantiza que la medición sea real y no dependa de páginas ya 
+-- almacenadas en memoria.
 ---------------------------------------------------------------------------
-
--- Limpiar caché
 DBCC DROPCLEANBUFFERS;
 DBCC FREEPROCCACHE;
 GO
 
+
+---------------------------------------------------------------------------
+          -- 3: CONSULTA CON ÍNDICE NONCLUSTERED + INCLUDE
+-- Usamos el mismo rango que en Pruebas 1 y 2.
+---------------------------------------------------------------------------
+-- 1. Activar estadísticas
 SET STATISTICS TIME ON;
 SET STATISTICS IO ON;
 
 
--- MISMA CONSULTA (1 hora para comparar con Prueba 2.B)
+-- 2. Misma consulta
 SELECT 
     id,
     fecha_emision,
     mesa,
-    lista,
-    descripcion
+    lista
 FROM auditoria_votos
-WHERE fecha_emision >= DATEADD(HOUR, -1, GETDATE())
-  AND fecha_emision < GETDATE()
+WHERE fecha_emision BETWEEN '2025-11-17' AND '2025-11-18'
 ORDER BY fecha_emision DESC;
 
 SET STATISTICS TIME OFF;
@@ -79,12 +97,13 @@ GO
 
 ---------------------------------------------------------------------------
 -- Datos obtenidos:
---   -Tiempo transcurrido: 258 ms 
---   -Lecturas lógicas: 17 páginas 
+--   - Tiempo de CPU: 78 ms
+--   - Tiempo transcurrido: 1074 ms 
+--   - Lecturas lógicas: 255 páginas
+--   - Operación: Index Seek (NonClaustered)
 
--- Con estos analisis podemos concluir que el Indice Covering es mejor porque:
---    - Tenemos menos lecturas: 17 vs 20 páginas
---    - Sin Key Lookup: Todo se resuelve desde el índice
---    - Mantiene flexibilidad: La PK sigue siendo clustered en id
---    - Escalable: es posible crear más índices nonclustered de ser necesario.
+-- Con estos datos podemos concluir que el Indice Covering es mejor porque:
+--   - Tenemos menos lecturas: 560 (Prueba 1) vs 255 páginas
+--   - Sin Key Lookup: Todo se resuelve desde el índice
+--   - Mantiene flexibilidad: La PK sigue siendo clustered en id
 ---------------------------------------------------------------------------

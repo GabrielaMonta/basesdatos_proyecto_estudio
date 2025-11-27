@@ -1,46 +1,85 @@
 ---------------------------------------------------------------------------
--- Se crea un índice clustered en fecha_emision para ver la mejora.
--- Esto requiere 3 pasos:
---   - Eliminar la PK clustered actual (en id)
---   - Recrearla como NONCLUSTERED
---   - Crear el nuevo índice CLUSTERED en fecha_emision
+---------------------------------------------------------------------------
+            -- PRUEBA 2 – ÍNDICE CLUSTERED SOBRE fecha_emision
+---------------------------------------------------------------------------
+-- ** Objetivo **
+-- Medir la mejora en rendimiento al volver la columna fecha_emision la clave 
+-- CLUSTERED de la tabla, lo que ordena físicamente los datos por fecha.
 
--- Posteriormente se realiza la misma consulta con índice clustered en fecha_emision, 
--- permitiendo acceso directo al rango de fechas.
--- CLUSTERED INDEX SEEK va directo al rango de fechas
--- Lee solo las páginas necesarias (las de los últimos 7 días)
--- Resultado esperado:
---   Tiempo: BAJO
---   I/O: Reducción del 70-95% vs Prueba 1
----------------------------------------------------------------------------
----------------------------------------------------------------------------
-			-- CREANDO ÍNDICE CLUSTERED EN fecha_emision' --
+-- ** Justificación ** 
+-- Esto permite que SQL Server acceda únicamente al segmento de datos que 
+-- pertenece al rango consultado, evitando recorrer toda la tabla.
 ---------------------------------------------------------------------------
 
--- Paso 1: Eliminar constraint de PK clustered
+---------------------------------------------------------------------------
+                -- 1. LIMPIEZA DE ÍNDICES EXISTENTES
+-- Garantiza que no haya índices previos que alteren los resultados.
+---------------------------------------------------------------------------
+
+-- 1A. Borrar covering si existe
+IF EXISTS (SELECT 1 
+           FROM sys.indexes 
+           WHERE name = 'IX_auditoria_votos_fecha_COVERING')
+    DROP INDEX IX_auditoria_votos_fecha_COVERING ON auditoria_votos;
+GO
+
+-- 1B. Borrar índice clustered en fecha si existe
+IF EXISTS (SELECT 1 
+           FROM sys.indexes 
+           WHERE name = 'IX_auditoria_votos_fecha')
+    DROP INDEX IX_auditoria_votos_fecha ON auditoria_votos;
+GO
+
+-- 1C. Quitar la PK si existe
+IF EXISTS (SELECT 1 FROM sys.key_constraints 
+           WHERE parent_object_id = OBJECT_ID('auditoria_votos')
+                AND name = 'PK_auditoria_votos')
+BEGIN
+    ALTER TABLE auditoria_votos 
+    DROP CONSTRAINT PK_auditoria_votos;
+END
+GO
+
+-- 1D. Restaurar PK como CLUSTERED (estado limpio)
+ALTER TABLE auditoria_votos
+ADD CONSTRAINT PK_auditoria_votos PRIMARY KEY CLUSTERED (id);
+GO
+
+
+---------------------------------------------------------------------------
+			-- 2. CREAR ÍNDICE CLUSTERED EN fecha_emision
+---------------------------------------------------------------------------
+
+-- 2A. Eliminar constraint de PK clustered
 ALTER TABLE auditoria_votos 
 DROP CONSTRAINT PK_auditoria_votos;
 GO
 
--- Paso 2: Recrear PK como NONCLUSTERED
+-- 2B. Recrear PK como NONCLUSTERED
 ALTER TABLE auditoria_votos 
 ADD CONSTRAINT PK_auditoria_votos PRIMARY KEY NONCLUSTERED (id);
 GO
 
--- Paso 3: Crear índice CLUSTERED en fecha_emision
+-- 2C. Crear índice CLUSTERED en fecha_emision
 CREATE CLUSTERED INDEX IX_auditoria_votos_fecha
 ON auditoria_votos(fecha_emision DESC);
 GO
 
 
 ---------------------------------------------------------------------------
---      PRUEBA 2 - CONSULTA CON ÍNDICE CLUSTERED
+                    -- 3. LIMPIAR CACHÉS DEL MOTOR
+-- Esto garantiza que la medición sea real y no dependa de páginas ya 
+-- almacenadas en memoria.
 ---------------------------------------------------------------------------
-
 DBCC DROPCLEANBUFFERS;
 DBCC FREEPROCCACHE;
 GO
 
+
+---------------------------------------------------------------------------
+                  -- 4. CONSULTA CON ÍNDICE CLUSTERED
+---------------------------------------------------------------------------
+-- 1. Activar estadísticas
 SET STATISTICS TIME ON;
 SET STATISTICS IO ON;
 
@@ -49,11 +88,9 @@ SELECT
     id,
     fecha_emision,
     mesa,
-    lista,
-    descripcion
+    lista
 FROM auditoria_votos
-WHERE fecha_emision >= DATEADD(DAY, -7, GETDATE())
-  AND fecha_emision < GETDATE()
+WHERE fecha_emision BETWEEN '2025-11-17' AND '2025-11-18'
 ORDER BY fecha_emision DESC;
 
 SET STATISTICS TIME OFF;
@@ -62,10 +99,14 @@ GO
 
 ---------------------------------------------------------------------------
 -- Datos obtenidos:
---   -Tiempo de CPU: 204 ms
---   -Tiempo transcurrido: 1643 ms (mejoró)
---   -Lecturas lógicas: 584 páginas (empeoró)
--- No se obtuvieron mejoras drasticas ya que Los últimos 7 días representan 
--- un rango muy grande en los datos cargados. SQL Server está leyendo casi 
--- la misma cantidad de datos
+--   - Tiempo de CPU: 125 ms
+--   - Tiempo transcurrido: 1064 ms 
+--   - Lecturas lógicas: 458 páginas 
+--   - Operación: Clustered Index Seek 
+
+-- SQL Server pudo dirigirse directamente al rango de fechas consultado, 
+-- realizando un SEEK en lugar del SCAN completo de la Prueba 1.
+-- Esto redujo:
+--   - el tiempo total
+--   - el número de páginas leídas (102 páginas menos)
 ---------------------------------------------------------------------------
