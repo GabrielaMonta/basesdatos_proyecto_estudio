@@ -49,14 +49,15 @@ BEGIN
             RAISERROR('El token ya fue utilizado. No puede votar nuevamente.', 16, 1);
         END;
 
-        -- 3) Verificar que la lista tenga candidatos
+        
+        -- 3) Verificar que la lista exista (incluye voto en blanco)
         IF NOT EXISTS (
-            SELECT 1 
-            FROM lista_cargos
+            SELECT 1
+            FROM lista
             WHERE lista_id = @ListaId
         )
         BEGIN
-            RAISERROR('La lista seleccionada no posee candidatos. No puede emitirse el voto.', 16, 1);
+            RAISERROR('La lista seleccionada no existe.', 16, 1);
         END;
 
         -- 4) Insertar el voto en la tabla voto
@@ -111,10 +112,10 @@ EXEC sp_RegistrarVoto 31, 1, 1;
 EXEC sp_RegistrarVoto 9999, 1, 1;
 
 
---Caso de fallo 3: queremos votar a una lista vacia (lista_id 3 esta vacia)
+--Caso de fallo 3: queremos votar a una lista no existente
 EXEC sp_RegistrarVoto 
     @TokenId = 32,
-    @ListaId = 3,
+    @ListaId = 33,
     @MesaVotacionId = 1;
 
 ---------------------------------------------------------------------------
