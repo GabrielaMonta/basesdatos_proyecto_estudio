@@ -22,10 +22,10 @@ DECLARE @total_escrutinio INT = (SELECT COUNT(*) FROM escrutinio_mesa);
 DECLARE @total_resultado INT = (SELECT COUNT(*) FROM resultado_eleccion);
 
 PRINT 'Estado de la base de datos:'
-PRINT '  Estudiantes registrados: ' + CAST(@total_estudiantes AS VARCHAR)
-PRINT '  Votos emitidos: ' + CAST(@total_votos AS VARCHAR)
-PRINT '  Registros en escrutinio_mesa: ' + CAST(@total_escrutinio AS VARCHAR)
-PRINT '  Registros en resultado_eleccion: ' + CAST(@total_resultado AS VARCHAR)
+PRINT '  Estudiantes registrados: ' + CAST(@total_estudiantes AS VARCHAR(30))
+PRINT '  Votos emitidos: ' + CAST(@total_votos AS VARCHAR(30))
+PRINT '  Registros en escrutinio_mesa: ' + CAST(@total_escrutinio AS VARCHAR(30))
+PRINT '  Registros en resultado_eleccion: ' + CAST(@total_resultado AS VARCHAR(30))
 PRINT ''
 
 -- Validar que hay datos para las pruebas
@@ -156,11 +156,11 @@ DECLARE @tiempo_total_sin INT = @tiempo1_sin + @tiempo2_sin + @tiempo3_sin;
 
 PRINT '═══════════════════════════════════════════════════════════'
 PRINT 'RESUMEN - SIN ÍNDICE COLUMNAR:'
-PRINT '  Consulta 1 (Ranking):       ' + RIGHT('        ' + CAST(@tiempo1_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
-PRINT '  Consulta 2 (Por mesa):      ' + RIGHT('        ' + CAST(@tiempo2_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
-PRINT '  Consulta 3 (Resultados):    ' + RIGHT('        ' + CAST(@tiempo3_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  Consulta 1 (Ranking):       ' + RIGHT('        ' + CAST(@tiempo1_sin/1000.0 AS VARCHAR(30)), 8) + ' ms'
+PRINT '  Consulta 2 (Por mesa):      ' + RIGHT('        ' + CAST(@tiempo2_sin/1000.0 AS VARCHAR(30)), 8) + ' ms'
+PRINT '  Consulta 3 (Resultados):    ' + RIGHT('        ' + CAST(@tiempo3_sin/1000.0 AS VARCHAR(30)), 8) + ' ms'
 PRINT '  ──────────────────────────────────────'
-PRINT '  TOTAL:                      ' + RIGHT('        ' + CAST(@tiempo_total_sin/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  TOTAL:                      ' + RIGHT('        ' + CAST(@tiempo_total_sin/1000.0 AS VARCHAR(30)), 8) + ' ms'
 PRINT '═══════════════════════════════════════════════════════════'
 PRINT ''
 
@@ -179,19 +179,22 @@ IF EXISTS (SELECT 1 FROM sys.indexes
            AND object_id = OBJECT_ID('escrutinio_mesa'))
 BEGIN
     DROP INDEX idx_cs_escrutinio_mesa ON escrutinio_mesa;
+    PRINT 'Índice anterior eliminado en escrutinio_mesa'
 END
 
-
--- Crear índice NONCLUSTERED COLUMNSTORE
-CREATE NONCLUSTERED COLUMNSTORE INDEX idx_cs_escrutinio_mesa
-ON escrutinio_mesa (
-    mesa_votacion_id,   -- ID de mesa (filtros frecuentes)
-    lista_id,           -- ID de lista (agrupaciones)
-    cantidad_votos      -- Cantidad para agregaciones (SUM, AVG)
-);
-
-PRINT 'Índice columnar creado en escrutinio_mesa'
-PRINT ''
+-- Crear índice solo si no existe
+IF NOT EXISTS (SELECT 1 FROM sys.indexes 
+               WHERE name = 'idx_cs_escrutinio_mesa' 
+               AND object_id = OBJECT_ID('escrutinio_mesa'))
+BEGIN
+    CREATE NONCLUSTERED COLUMNSTORE INDEX idx_cs_escrutinio_mesa
+    ON escrutinio_mesa (
+        mesa_votacion_id,   -- ID de mesa (filtros frecuentes)
+        lista_id,           -- ID de lista (agrupaciones)
+        cantidad_votos      -- Cantidad para agregaciones (SUM, AVG)
+    );
+    PRINT 'Índice columnar creado en escrutinio_mesa'
+END
 
 -- Mismo proceso para resultado_eleccion
 IF EXISTS (SELECT 1 FROM sys.indexes 
@@ -199,17 +202,22 @@ IF EXISTS (SELECT 1 FROM sys.indexes
            AND object_id = OBJECT_ID('resultado_eleccion'))
 BEGIN
     DROP INDEX idx_cs_resultado_eleccion ON resultado_eleccion;
+    PRINT 'Índice anterior eliminado en resultado_eleccion'
 END
 
-CREATE NONCLUSTERED COLUMNSTORE INDEX idx_cs_resultado_eleccion
-ON resultado_eleccion (
-    eleccion_id,    -- ID de elección (filtros y agrupaciones)
-    lista_id,       -- ID de lista
-    resultado       -- Total de votos (agregaciones)
-);
-
-PRINT 'Índice columnar creado en resultado_eleccion'
-PRINT ''
+-- Crear índice solo si no existe
+IF NOT EXISTS (SELECT 1 FROM sys.indexes 
+               WHERE name = 'idx_cs_resultado_eleccion' 
+               AND object_id = OBJECT_ID('resultado_eleccion'))
+BEGIN
+    CREATE NONCLUSTERED COLUMNSTORE INDEX idx_cs_resultado_eleccion
+    ON resultado_eleccion (
+        eleccion_id,    -- ID de elección (filtros y agrupaciones)
+        lista_id,       -- ID de lista
+        resultado       -- Total de votos (agregaciones)
+    );
+    PRINT 'Índice columnar creado en resultado_eleccion'
+END
 
 -- Consultar metadata para verificar índices creados
 PRINT '─────────────────────────────────────────────────────────────'
@@ -342,11 +350,11 @@ DECLARE @tiempo_total_con INT = @tiempo1_con + @tiempo2_con + @tiempo3_con;
 
 PRINT '═══════════════════════════════════════════════════════════'
 PRINT 'RESUMEN - CON ÍNDICE COLUMNAR:'
-PRINT '  Consulta 1 (Ranking):       ' + RIGHT('        ' + CAST(@tiempo1_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
-PRINT '  Consulta 2 (Por mesa):      ' + RIGHT('        ' + CAST(@tiempo2_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
-PRINT '  Consulta 3 (Resultados):    ' + RIGHT('        ' + CAST(@tiempo3_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  Consulta 1 (Ranking):       ' + RIGHT('        ' + CAST(@tiempo1_con/1000.0 AS VARCHAR(30)), 8) + ' ms'
+PRINT '  Consulta 2 (Por mesa):      ' + RIGHT('        ' + CAST(@tiempo2_con/1000.0 AS VARCHAR(30)), 8) + ' ms'
+PRINT '  Consulta 3 (Resultados):    ' + RIGHT('        ' + CAST(@tiempo3_con/1000.0 AS VARCHAR(30)), 8) + ' ms'
 PRINT '  ──────────────────────────────────────'
-PRINT '  TOTAL:                      ' + RIGHT('        ' + CAST(@tiempo_total_con/1000.0 AS VARCHAR(10)), 8) + ' ms'
+PRINT '  TOTAL:                      ' + RIGHT('        ' + CAST(@tiempo_total_con/1000.0 AS VARCHAR(30)), 8) + ' ms'
 PRINT '═══════════════════════════════════════════════════════════'
 PRINT ''
 
